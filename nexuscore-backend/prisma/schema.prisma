@@ -1,0 +1,3816 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("NEXUSCORE_DATABASE_URL")
+}
+
+// ── ENUMS ─────────────────────────────────────────────────────────────────────
+
+enum CrmUserRole {
+  admin
+  manager
+  employee
+}
+
+enum Plan {
+  Free
+  Basic
+  Pro
+  Enterprise
+}
+
+enum SubscriptionStatus {
+  Active
+  Inactive
+  Cancelled
+  Expired
+  Pending
+}
+
+enum BillingCycle {
+  Monthly
+  Yearly
+}
+
+enum UserStatus {
+  active
+  inactive
+  pending
+}
+
+enum ConnectionStatus {
+  pending
+  connected
+  blocked
+}
+
+enum NoteType {
+  text
+  checklist
+  image
+}
+
+enum FieldType {
+  text
+  email
+  phone
+  textarea
+  select
+  number
+  url
+  image
+}
+
+enum LeadStageType {
+  initial
+  additional
+  success
+  failed
+}
+
+enum DocumentStageType {
+  initial
+  additional
+  success
+  failed
+}
+
+enum InvoiceStageType {
+  initial
+  additional
+  success
+  failed
+}
+
+enum EstimateStageType {
+  initial
+  additional
+  success
+  failed
+}
+
+enum CrmModule {
+  LEADS
+  CONTACTS
+  DEALS
+  COMPANIES
+  TASKS
+  DOCUMENTS
+  INVOICES
+  ESTIMATES
+  REPORTS
+  SETTINGS
+  USERS
+  PRODUCTS
+  ORDERS
+  DASHBOARD
+  ANALYTICS
+  EMAIL
+  INTEGRATIONS
+  AUTOMATION
+}
+
+enum ResourceType {
+  MENU
+  PAGE
+  SECTION
+  FIELD
+}
+
+enum ProcessTrigger {
+  MANUAL
+  SCHEDULED
+  EVENT_BASED
+  WEBHOOK
+  API_CALL
+}
+
+enum ProcessStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+enum EmailTemplateCategory {
+  WELCOME
+  NOTIFICATION
+  FOLLOW_UP
+  REMINDER
+  INVOICE
+  QUOTE
+  LEAD_NURTURING
+  DEAL_CLOSED
+  TASK_ASSIGNED
+  CUSTOM
+}
+
+enum MailFolder {
+  INBOX
+  SENT
+  DRAFT
+  TRASH
+  ARCHIVE
+  SPAM
+}
+
+enum NotificationFrequency {
+  IMMEDIATE
+  HOURLY_DIGEST
+  DAILY_DIGEST
+  WEEKLY_DIGEST
+  NEVER
+}
+
+enum FormEntityType {
+  LEAD
+  DEAL
+  CONTACT
+  COMPANY
+  USER
+  TASK
+  INVOICE
+  QUOTE
+  PRODUCT
+  CUSTOMER
+  CUSTOM
+}
+
+enum ChatType {
+  DIRECT
+  GROUP
+}
+
+enum ChatMessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  AUDIO
+  FILE
+  SOUND
+}
+
+enum ChatMessageStatus {
+  SENT
+  DELIVERED
+  READ
+}
+
+enum CollabStatus {
+  ACTIVE
+  PENDING
+  ARCHIVED
+  COMPLETED
+}
+
+enum CollabMemberRole {
+  OWNER
+  ADMIN
+  MEMBER
+  GUEST
+}
+
+enum CollabInvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+enum WorkGroupStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum WorkGroupMemberRole {
+  LEADER
+  MEMBER
+  VIEWER
+}
+
+enum RichDocumentType {
+  DOCUMENT
+  SPREADSHEET
+  PRESENTATION
+  BOARD
+}
+
+enum EventColor {
+  sky
+  amber
+  violet
+  rose
+  emerald
+  orange
+}
+
+enum FitnessActivityType {
+  RUNNING
+  CYCLING
+  WALKING
+  SWIMMING
+  STRENGTH_TRAINING
+  YOGA
+  PILATES
+  CARDIO
+  CROSSFIT
+  OTHER
+}
+
+enum FitnessActivityStatus {
+  PLANNED
+  COMPLETED
+  CANCELLED
+  SKIPPED
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  PAID
+  SHIPPED
+  DELIVERED
+  COMPLETED
+  CANCELLED
+  FAILED
+}
+
+enum OrderType {
+  SALE
+  RETURN
+  REFUND
+}
+
+enum ProductType {
+  SINGLE
+  VARIANT
+  COMPOSITE
+}
+
+enum MediaFileType {
+  DOCUMENT
+  IMAGE
+  VIDEO
+  AUDIO
+  ARCHIVE
+  OTHER
+}
+
+enum ProjectStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum ReminderPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  BANK_TRANSFER
+  CHEQUE
+  OTHER
+}
+
+enum TableStatus {
+  available
+  occupied
+  reserved
+}
+
+enum ReturnStatus {
+  PENDING
+  APPROVED
+  PROCESSING
+  COMPLETED
+  REJECTED
+  CANCELLED
+}
+
+enum ReturnReason {
+  DEFECTIVE
+  DAMAGED
+  WRONG_ITEM
+  NOT_AS_DESCRIBED
+  CUSTOMER_CHANGE_MIND
+  LATE_DELIVERY
+  DUPLICATE_ORDER
+  OTHER
+}
+
+enum RefundMethod {
+  ORIGINAL_PAYMENT
+  CASH
+  CARD
+  BANK_TRANSFER
+  STORE_CREDIT
+  EXCHANGE
+}
+
+enum DashboardVisibility {
+  PRIVATE
+  COMPANY
+  ROLES
+  USERS
+}
+
+enum TodoStatus {
+  pending
+  inProgress
+  completed
+}
+
+enum TodoPriority {
+  high
+  medium
+  low
+}
+
+// ── CORE ──────────────────────────────────────────────────────────────────────
+
+model Company {
+  id                       String             @id @default(uuid())
+  name                     String
+  email                    String?            @unique
+  phone                    String?
+  address                  String?
+  website                  String?
+  industry                 String?
+  slug                     String?            @unique
+  plan                     Plan               @default(Free)
+  subscriptionStatus       SubscriptionStatus @default(Active)
+  subscriptionStartDate    DateTime?
+  subscriptionEndDate      DateTime?
+  trialEndDate             DateTime?
+  billingCycle             BillingCycle?      @default(Monthly)
+  customFieldsSectionTitle String?            @default("Custom Fields")
+  metaAppId                String?
+  metaAppSecret            String?
+  createdAt                DateTime           @default(now())
+  updatedAt                DateTime           @updatedAt
+
+  branches             Branch[]
+  users                User[]
+  cuttingOrders        CuttingOrder[]
+  leadStages           LeadStage[]
+  documentStages       DocumentStage[]
+  invoiceStages        InvoiceStage[]
+  estimateStages       EstimateStage[]
+  sources              Source[]
+  contactTypes         ContactType[]
+  salutations          Salutation[]
+  callStatuses         CallStatus[]
+  companyTypes         CompanyType[]
+  employees            Employee[]
+  industries           Industry[]
+  dealTypes            DealType[]
+  currencies           Currency[]
+  locations            Location[]
+  taxes                Tax[]
+  unitsOfMeasurement   UnitOfMeasurement[]
+  productProperties    ProductProperty[]
+  dealPipelines        DealPipeline[]
+  crmRoles             CrmRole[]
+  accessControls       AccessControl[]
+  securities           Security[]
+  permissionSettings   PermissionSetting[]
+  businessProcesses    BusinessProcess[]
+  emailTemplates       EmailTemplate[]
+  smtpSettings         SmtpSetting[]
+  emailNotifications   EmailNotification[]
+  emailSignatures      EmailSignature[]
+  formTemplates        FormTemplate[]
+  entityData           EntityData[]
+  customEntityPages    CustomEntityPage[]
+  feedPosts            FeedPost[]
+  collabs              Collab[]
+  workGroups           WorkGroup[]
+  richDocuments        RichDocument[]
+  calendarEvents       CalendarEvent[]
+  fitnessActivities    FitnessActivity[]
+  nutritionEntries     NutritionEntry[]
+  sleepRecords         SleepRecord[]
+  products             Product[]
+  productCategories    ProductCategory[]
+  productSubCategories ProductSubCategory[]
+  customers            Customer[]
+  orders               Order[]
+  folders              Folder[]
+  mediaFiles           MediaFile[]
+  projects             Project[]
+  menuItems            MenuItem[]
+  chats                Chat[]
+  formSections         FormSection[]
+  formSectionPerms     FormSectionPermission[]
+  formFieldPerms       FormFieldPermission[]
+  mails                Mail[]
+  chatAccess           ChatAccess[]
+  customFields         CustomField[]
+  analyticalReports    AnalyticalReport[]
+  autoNumberings       AutoNumbering[]
+  reminders            Reminder[]
+  customerPayments     CustomerPayment[]
+  supplierPayments     SupplierPayment[]
+  suppliers            Supplier[]
+  orderReturns         OrderReturn[]
+  tableCategories      TableCategory[]
+  restaurantTables     RestaurantTable[]
+  reportTemplates      ReportTemplate[]
+  pdfReports           PdfReport[]
+  dealDashboards       DealDashboard[]
+  loginHistory         LoginHistory[]
+  storageQuotas        StorageQuota[]
+  systemSettings       SystemSetting[]
+  exceptionLogs        ExceptionLog[]
+  activities           Activity[]
+  comments             Comment[]
+  pricingPlans         PricingPlan[]
+}
+
+model Branch {
+  id                       String   @id @default(uuid())
+  companyId                String
+  name                     String
+  address                  String?
+  phone                    String?
+  email                    String?
+  customFieldsSectionTitle String?  @default("Custom Fields")
+  waPhoneNumberId          String?
+  waAccessToken            String?
+  waVerified               Boolean  @default(false)
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  company              Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  users                User[]
+  cuttingOrders        CuttingOrder[]
+  leadStages           LeadStage[]
+  documentStages       DocumentStage[]
+  invoiceStages        InvoiceStage[]
+  estimateStages       EstimateStage[]
+  sources              Source[]
+  contactTypes         ContactType[]
+  salutations          Salutation[]
+  callStatuses         CallStatus[]
+  companyTypes         CompanyType[]
+  employees            Employee[]
+  industries           Industry[]
+  dealTypes            DealType[]
+  currencies           Currency[]
+  locations            Location[]
+  taxes                Tax[]
+  unitsOfMeasurement   UnitOfMeasurement[]
+  productProperties    ProductProperty[]
+  dealPipelines        DealPipeline[]
+  crmRoles             CrmRole[]
+  accessControls       AccessControl[]
+  securities           Security[]
+  permissionSettings   PermissionSetting[]
+  businessProcesses    BusinessProcess[]
+  emailTemplates       EmailTemplate[]
+  smtpSettings         SmtpSetting[]
+  emailNotifications   EmailNotification[]
+  emailSignatures      EmailSignature[]
+  formTemplates        FormTemplate[]
+  entityData           EntityData[]
+  customEntityPages    CustomEntityPage[]
+  feedPosts            FeedPost[]
+  collabs              Collab[]
+  workGroups           WorkGroup[]
+  richDocuments        RichDocument[]
+  calendarEvents       CalendarEvent[]
+  fitnessActivities    FitnessActivity[]
+  nutritionEntries     NutritionEntry[]
+  sleepRecords         SleepRecord[]
+  products             Product[]
+  productCategories    ProductCategory[]
+  productSubCategories ProductSubCategory[]
+  customers            Customer[]
+  orders               Order[]
+  folders              Folder[]
+  mediaFiles           MediaFile[]
+  projects             Project[]
+  menuItems            MenuItem[]
+  chats                Chat[]
+  formSections         FormSection[]
+  formSectionPerms     FormSectionPermission[]
+  formFieldPerms       FormFieldPermission[]
+  mails                Mail[]
+  chatAccess           ChatAccess[]
+  customFields         CustomField[]
+  analyticalReports    AnalyticalReport[]
+  autoNumberings       AutoNumbering[]
+  reminders            Reminder[]
+  customerPayments     CustomerPayment[]
+  supplierPayments     SupplierPayment[]
+  suppliers            Supplier[]
+  orderReturns         OrderReturn[]
+  tableCategories      TableCategory[]
+  restaurantTables     RestaurantTable[]
+  reportTemplates      ReportTemplate[]
+  pdfReports           PdfReport[]
+  dealDashboards       DealDashboard[]
+  loginHistory         LoginHistory[]
+  storageQuotas        StorageQuota[]
+  systemSettings       SystemSetting[]
+  exceptionLogs        ExceptionLog[]
+  activities           Activity[]
+  comments             Comment[]
+}
+
+model User {
+  id                 String       @id @default(uuid())
+  companyId          String
+  branchId           String?
+  name               String
+  email              String       @unique
+  password           String
+  googleId           String?      @unique
+  mustChangePassword Boolean      @default(true)
+  country            String?
+  crmRole            CrmUserRole?
+  image              String?
+  userStatus         UserStatus?  @default(active)
+  planName           Plan?
+  phone              String?
+  location           String?
+  department         String?
+  hourlyRate         Decimal?     @db.Decimal(10, 2)
+  isActive           Boolean      @default(true)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  company                  Company                  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch                   Branch?                  @relation(fields: [branchId], references: [id])
+  userRoles                UserRole[]
+  bpmTasks                 BpmTask[]
+  auditLogs                AuditLog[]
+  notifications            Notification[]
+  cuttingBatches           CuttingBatch[]
+  notes                    Note[]
+  noteLabels               NoteLabel[]
+  todos                    Todo[]
+  settings                 UserSettings?
+  passwordResetTokens      PasswordResetToken[]
+  emailSignatures          EmailSignature[]
+  feedPosts                FeedPost[]
+  feedLikes                FeedLike[]
+  feedComments             FeedComment[]
+  createdCollabs           Collab[]                 @relation("CreatedCollabs")
+  collabMembers            CollabMember[]
+  collabInvitations        CollabInvitation[]       @relation("InvitedBy")
+  createdWorkGroups        WorkGroup[]              @relation("CreatedWorkGroups")
+  workGroupMembers         WorkGroupMember[]
+  createdRichDocuments     RichDocument[]
+  calendarEvents           CalendarEvent[]
+  managedProjects          Project[]                @relation("ManagedProjects")
+  projectMembers           ProjectMember[]
+  reminders                Reminder[]
+  fitnessActivities        FitnessActivity[]
+  nutritionEntries         NutritionEntry[]
+  sleepRecords             SleepRecord[]
+  folders                  Folder[]
+  mediaFiles               MediaFile[]
+  connectionsAsUser1       UserConnection[]         @relation("User1Connections")
+  connectionsAsUser2       UserConnection[]         @relation("User2Connections")
+  createdProducts          Product[]                @relation("CreatedProducts")
+  updatedProducts          Product[]                @relation("UpdatedProducts")
+  createdReportTemplates   ReportTemplate[]         @relation("CreatedReportTemplates")
+  updatedReportTemplates   ReportTemplate[]         @relation("UpdatedReportTemplates")
+  createdPdfReports        PdfReport[]              @relation("CreatedPdfReports")
+  updatedPdfReports        PdfReport[]              @relation("UpdatedPdfReports")
+  createdDealDashboards    DealDashboard[]          @relation("CreatedDealDashboards")
+  dealDashboardUserShares  DealDashboardUserShare[]
+  dealDashboardPrefs       DealDashboardUserPref[]
+  chatParticipants         ChatParticipant[]
+  chatMessages             ChatMessage[]            @relation("SentMessages")
+  formSectionPerms         FormSectionPermission[]
+  formFieldPerms           FormFieldPermission[]
+  mails                    Mail[]
+  chatAccessGranted        ChatAccess[]             @relation("ChatAccessGranted")
+  chatAccessReceived       ChatAccess[]             @relation("ChatAccessReceived")
+  loginHistory             LoginHistory[]
+  exceptionLogs            ExceptionLog[]
+  processedReturns         OrderReturn[]            @relation("ProcessedReturns")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  isSystem    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  permissions RolePermission[]
+  userRoles   UserRole[]
+}
+
+model Permission {
+  id          String  @id @default(uuid())
+  module      String
+  action      String
+  description String?
+
+  roles RolePermission[]
+
+  @@unique([module, action])
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+}
+
+model UserRole {
+  userId     String
+  roleId     String
+  assignedBy String?
+  assignedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+}
+
+// ── CRM LOOKUP TABLES ─────────────────────────────────────────────────────────
+
+model LeadStage {
+  id        String        @id @default(uuid())
+  name      String
+  color     String
+  order     Int
+  type      LeadStageType
+  companyId String?
+  branchId  String?
+  company   Company?      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?       @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model DocumentStage {
+  id        String            @id @default(uuid())
+  name      String
+  color     String
+  order     Int
+  type      DocumentStageType
+  companyId String?
+  branchId  String?
+  company   Company?          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?           @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model InvoiceStage {
+  id        String           @id @default(uuid())
+  name      String
+  color     String
+  order     Int
+  type      InvoiceStageType
+  companyId String?
+  branchId  String?
+  company   Company?         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?          @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model EstimateStage {
+  id        String            @id @default(uuid())
+  name      String
+  color     String
+  order     Int
+  type      EstimateStageType
+  companyId String?
+  branchId  String?
+  company   Company?          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?           @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model Source {
+  id        String   @id @default(uuid())
+  name      String
+  color     String
+  order     Int
+  companyId String?
+  branchId  String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model ContactType {
+  id        String   @id @default(uuid())
+  name      String
+  color     String
+  order     Int
+  companyId String?
+  branchId  String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model Salutation {
+  id        String   @id @default(uuid())
+  name      String
+  color     String
+  order     Int
+  companyId String?
+  branchId  String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model CallStatus {
+  id        String   @id @default(uuid())
+  name      String
+  color     String
+  order     Int
+  companyId String?
+  branchId  String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model CompanyType {
+  id        String   @id @default(uuid())
+  name      String
+  color     String
+  order     Int
+  companyId String?
+  branchId  String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model Employee {
+  id        String   @id @default(uuid())
+  name      String
+  color     String
+  order     Int
+  companyId String?
+  branchId  String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model Industry {
+  id        String   @id @default(uuid())
+  name      String
+  color     String
+  order     Int
+  companyId String?
+  branchId  String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model DealType {
+  id        String   @id @default(uuid())
+  name      String
+  color     String
+  order     Int
+  companyId String?
+  branchId  String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model Currency {
+  id        String   @id @default(uuid())
+  code      String
+  name      String
+  symbol    String?
+  isDefault Boolean  @default(false)
+  isActive  Boolean  @default(true)
+  companyId String?
+  branchId  String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([code, companyId, branchId])
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model Location {
+  id        String   @id @default(uuid())
+  name      String
+  address   String?
+  city      String?
+  state     String?
+  country   String?
+  zipCode   String?
+  phone     String?
+  email     String?
+  isDefault Boolean  @default(false)
+  isActive  Boolean  @default(true)
+  companyId String?
+  branchId  String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model Tax {
+  id          String   @id @default(uuid())
+  name        String
+  rate        Float
+  description String?
+  isDefault   Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  companyId   String?
+  branchId    String?
+  company     Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model UnitOfMeasurement {
+  id          String   @id @default(uuid())
+  name        String
+  symbol      String?
+  description String?
+  isDefault   Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  companyId   String?
+  branchId    String?
+  company     Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model ProductProperty {
+  id         String   @id @default(uuid())
+  name       String
+  type       String?
+  options    String[] @default([])
+  isRequired Boolean  @default(false)
+  isDefault  Boolean  @default(false)
+  isActive   Boolean  @default(true)
+  companyId  String?
+  branchId   String?
+  company    Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch     Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+// ── DEAL PIPELINE ─────────────────────────────────────────────────────────────
+
+model DealPipeline {
+  id          String          @id @default(uuid())
+  name        String
+  description String?
+  isDefault   Boolean         @default(false)
+  isActive    Boolean         @default(true)
+  order       Int             @default(0)
+  companyId   String?
+  branchId    String?
+  company     Company?        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?         @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  stages      PipelineStage[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model PipelineStage {
+  id              String               @id @default(uuid())
+  name            String
+  color           String
+  order           Int
+  pipelineId      String
+  pipeline        DealPipeline         @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+  fromConnections PipelineConnection[] @relation("FromStage")
+  toConnections   PipelineConnection[] @relation("ToStage")
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  @@index([pipelineId])
+}
+
+model PipelineConnection {
+  id          String        @id @default(uuid())
+  fromStageId String
+  toStageId   String
+  fromStage   PipelineStage @relation("FromStage", fields: [fromStageId], references: [id], onDelete: Cascade)
+  toStage     PipelineStage @relation("ToStage", fields: [toStageId], references: [id], onDelete: Cascade)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@unique([fromStageId, toStageId])
+}
+
+// ── CRM ROLES & PERMISSIONS ───────────────────────────────────────────────────
+
+model CrmRole {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  permissions Json?
+  isSystem    Boolean  @default(false)
+  isDefault   Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  companyId   String?
+  branchId    String?
+  company     Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  permissionSettings  PermissionSetting[]
+  dashboardRoleShares DealDashboardRoleShare[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model AccessControl {
+  id         String   @id @default(uuid())
+  name       String
+  resource   String
+  action     String
+  conditions Json?
+  isActive   Boolean  @default(true)
+  companyId  String?
+  branchId   String?
+  company    Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch     Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([resource])
+}
+
+model Security {
+  id          String   @id @default(uuid())
+  name        String
+  type        String
+  value       String?
+  config      Json?
+  description String?
+  isActive    Boolean  @default(true)
+  companyId   String?
+  branchId    String?
+  company     Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([type])
+}
+
+model CustomField {
+  id               String   @id @default(uuid())
+  name             String
+  type             String
+  entity           String
+  required         Boolean  @default(false)
+  includeInReports Boolean  @default(false)
+  options          Json?
+  companyId        String?
+  branchId         String?
+  company          Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch           Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([entity])
+}
+
+model AnalyticalReport {
+  id             String   @id @default(uuid())
+  name           String
+  description    String?
+  customFieldIds Json
+  companyId      String?
+  branchId       String?
+  company        Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch         Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model AutoNumbering {
+  id             String    @id @default(uuid())
+  entity         String
+  prefix         String?
+  suffix         String?
+  format         String
+  startingNumber Int       @default(1)
+  currentNumber  Int       @default(0)
+  numberLength   Int?
+  resetPeriod    String?
+  lastResetDate  DateTime?
+  isActive       Boolean   @default(true)
+  companyId      String?
+  branchId       String?
+  company        Company?  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch         Branch?   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([entity, companyId, branchId])
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model PermissionSetting {
+  id           String              @id @default(uuid())
+  crmRoleId    String
+  crmRole      CrmRole             @relation(fields: [crmRoleId], references: [id], onDelete: Cascade)
+  module       CrmModule?
+  resourceType ResourceType?       @default(MENU)
+  resourcePath String?
+  resourceName String?
+  parentId     String?
+  parent       PermissionSetting?  @relation("PermHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children     PermissionSetting[] @relation("PermHierarchy")
+  canRead      Boolean             @default(false)
+  canWrite     Boolean             @default(false)
+  canEdit      Boolean             @default(false)
+  canDelete    Boolean             @default(false)
+  canManage    Boolean             @default(false)
+  canExport    Boolean             @default(false)
+  canImport    Boolean             @default(false)
+  fieldPermissions   Json?
+  sectionPermissions Json?
+  companyId    String?
+  branchId     String?
+  company      Company?            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch       Branch?             @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@unique([crmRoleId, resourcePath, companyId, branchId])
+  @@index([crmRoleId])
+  @@index([module])
+  @@index([resourceType])
+  @@index([resourcePath])
+  @@index([companyId])
+  @@index([branchId])
+}
+
+// ── BUSINESS PROCESSES & EMAIL ─────────────────────────────────────────────────
+
+model BusinessProcess {
+  id          String         @id @default(uuid())
+  name        String
+  description String?
+  trigger     ProcessTrigger @default(MANUAL)
+  status      ProcessStatus  @default(DRAFT)
+  isActive    Boolean        @default(false)
+  steps       Json?
+  conditions  Json?
+  settings    Json?
+  companyId   String?
+  branchId    String?
+  company     Company?       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?        @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  formTemplates FormTemplate[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([status])
+}
+
+model EmailTemplate {
+  id          String                @id @default(uuid())
+  name        String
+  subject     String
+  body        String                @db.Text
+  category    EmailTemplateCategory @default(CUSTOM)
+  description String?
+  variables   Json?
+  isActive    Boolean               @default(true)
+  isDefault   Boolean               @default(false)
+  companyId   String?
+  branchId    String?
+  company     Company?              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?               @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  @@unique([name, companyId, branchId])
+  @@index([companyId])
+  @@index([branchId])
+  @@index([category])
+}
+
+model SmtpSetting {
+  id        String   @id @default(uuid())
+  name      String
+  host      String
+  port      Int
+  secure    Boolean  @default(false)
+  username  String
+  password  String
+  fromEmail String
+  fromName  String?
+  isActive  Boolean  @default(false)
+  isDefault Boolean  @default(false)
+  companyId String?
+  branchId  String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  mails     Mail[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, companyId, branchId])
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model Mail {
+  id            String       @id @default(uuid())
+  subject       String
+  body          String       @db.Text
+  fromEmail     String
+  fromName      String?
+  toEmail       String
+  toName        String?
+  cc            String?
+  bcc           String?
+  replyTo       String?
+  folder        MailFolder   @default(INBOX)
+  isRead        Boolean      @default(false)
+  isStarred     Boolean      @default(false)
+  isImportant   Boolean      @default(false)
+  labels        String[]     @default([])
+  attachments   Json?
+  headers       Json?
+  sentAt        DateTime?
+  receivedAt    DateTime?
+  userId        String
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId     String?
+  branchId      String?
+  company       Company?     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch        Branch?      @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  smtpSettingId String?
+  smtpSetting   SmtpSetting? @relation(fields: [smtpSettingId], references: [id], onDelete: SetNull)
+  threadId      String?
+  inReplyTo     String?
+  parentMail    Mail?        @relation("MailReplies", fields: [inReplyTo], references: [id], onDelete: SetNull)
+  replies       Mail[]       @relation("MailReplies")
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([userId])
+  @@index([companyId])
+  @@index([branchId])
+  @@index([folder])
+  @@index([isRead])
+  @@index([threadId])
+}
+
+model EmailNotification {
+  id          String                @id @default(uuid())
+  name        String
+  type        String
+  description String?
+  trigger     Json?
+  recipients  Json?
+  templateId  String?
+  frequency   NotificationFrequency @default(IMMEDIATE)
+  channels    Json?
+  conditions  Json?
+  isActive    Boolean               @default(true)
+  isSystem    Boolean               @default(false)
+  companyId   String?
+  branchId    String?
+  company     Company?              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?               @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  @@unique([name, companyId, branchId])
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model EmailSignature {
+  id        String   @id @default(uuid())
+  name      String
+  content   String   @db.Text
+  plainText String?  @db.Text
+  userId    String?
+  isDefault Boolean  @default(false)
+  isActive  Boolean  @default(true)
+  companyId String?
+  branchId  String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([userId])
+}
+
+// ── FORMS & ENTITY DATA ────────────────────────────────────────────────────────
+
+model FormSection {
+  id          String                  @id @default(uuid())
+  title       String
+  description String?
+  order       Int                     @default(0)
+  position    String?                 @default("center")
+  columns     Int?                    @default(12)
+  companyId   String?
+  branchId    String?
+  company     Company?                @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?                 @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  isDefault   Boolean                 @default(false)
+  fields      FormField[]
+  permissions FormSectionPermission[]
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+
+  @@index([companyId])
+}
+
+model FormField {
+  id          String                @id @default(uuid())
+  label       String
+  type        FieldType
+  value       String?
+  options     String[]              @default([])
+  required    Boolean               @default(false)
+  order       Int                   @default(0)
+  sectionId   String
+  section     FormSection           @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  permissions FormFieldPermission[]
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  @@index([sectionId])
+}
+
+model FormSectionPermission {
+  id        String      @id @default(uuid())
+  sectionId String
+  userId    String
+  companyId String?
+  branchId  String?
+  canView   Boolean     @default(true)
+  section   FormSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company?    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?     @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@unique([sectionId, userId, companyId, branchId])
+  @@index([sectionId])
+  @@index([userId])
+}
+
+model FormFieldPermission {
+  id        String    @id @default(uuid())
+  fieldId   String
+  userId    String
+  companyId String?
+  branchId  String?
+  canView   Boolean   @default(true)
+  field     FormField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company?  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([fieldId, userId, companyId, branchId])
+  @@index([fieldId])
+  @@index([userId])
+}
+
+model FormTemplate {
+  id               String           @id @default(uuid())
+  name             String
+  description      String?
+  entityType       FormEntityType
+  customEntityName String?
+  formFields       Json
+  workflowId       String?
+  workflow         BusinessProcess? @relation(fields: [workflowId], references: [id], onDelete: SetNull)
+  path             String?
+  isActive         Boolean          @default(true)
+  settings         Json?
+  companyId        String?
+  branchId         String?
+  company          Company?         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch           Branch?          @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  entityData       EntityData[]
+  customEntityPage CustomEntityPage?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@unique([name, companyId, branchId])
+  @@index([companyId])
+  @@index([branchId])
+  @@index([entityType])
+}
+
+model CustomEntityPage {
+  id               String       @id @default(uuid())
+  name             String
+  slug             String
+  templateId       String       @unique
+  template         FormTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  customEntityName String
+  icon             String?
+  description      String?
+  isActive         Boolean      @default(true)
+  order            Int          @default(0)
+  companyId        String?
+  branchId         String?
+  company          Company?     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch           Branch?      @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@unique([slug, companyId, branchId])
+  @@index([companyId])
+  @@index([branchId])
+  @@index([isActive])
+}
+
+model EntityData {
+  id               String         @id @default(uuid())
+  entityType       FormEntityType
+  customEntityName String?
+  templateId       String?
+  template         FormTemplate?  @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  data             Json
+  companyId        String?
+  branchId         String?
+  company          Company?       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch           Branch?        @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([entityType])
+  @@index([templateId])
+  @@index([customEntityName])
+}
+
+model PricingPlan {
+  id               String   @id @default(uuid())
+  name             String
+  description      String?
+  price            Float
+  yearlyPrice      Float?
+  industry         String?
+  features         Json
+  enabledMenuItems Json?
+  isActive         Boolean  @default(true)
+  companyId        String?
+  company          Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([industry])
+  @@index([isActive])
+}
+
+// ── NOTES & TODOS ──────────────────────────────────────────────────────────────
+
+model Note {
+  id             String              @id @default(uuid())
+  title          String
+  content        String?
+  type           NoteType
+  isArchived     Boolean             @default(false)
+  image          String?
+  userId         String
+  user           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  labels         NoteLabel[]
+  checklistItems NoteChecklistItem[]
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@index([userId])
+}
+
+model NoteLabel {
+  id        String   @id @default(uuid())
+  title     String
+  color     String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes     Note[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model NoteChecklistItem {
+  id        String   @id @default(uuid())
+  text      String
+  checked   Boolean  @default(false)
+  noteId    String
+  note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([noteId])
+}
+
+model Todo {
+  id           String        @id @default(uuid())
+  title        String
+  description  String?
+  status       TodoStatus    @default(pending)
+  priority     TodoPriority  @default(medium)
+  starred      Boolean       @default(false)
+  dueDate      DateTime?
+  reminderDate DateTime?
+  position     Int           @default(0)
+  userId       String?
+  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignedTo   String[]      @default([])
+  comments     TodoComment[]
+  files        TodoFile[]
+  subTasks     TodoSubTask[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+model TodoComment {
+  id        String   @id @default(uuid())
+  text      String
+  todoId    String
+  todo      Todo     @relation(fields: [todoId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([todoId])
+}
+
+model TodoFile {
+  id         String   @id @default(uuid())
+  name       String
+  url        String
+  type       String
+  size       Int
+  todoId     String
+  todo       Todo     @relation(fields: [todoId], references: [id], onDelete: Cascade)
+  uploadedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([todoId])
+}
+
+model TodoSubTask {
+  id        String   @id @default(uuid())
+  title     String
+  completed Boolean  @default(false)
+  todoId    String
+  todo      Todo     @relation(fields: [todoId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([todoId])
+}
+
+// ── USER SETTINGS & AUTH ───────────────────────────────────────────────────────
+
+model UserSettings {
+  id                  String    @id @default(uuid())
+  userId              String    @unique
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  username            String?
+  bio                 String?
+  profileUrls         String[]  @default([])
+  avatar              String?
+  dateOfBirth         DateTime?
+  language            String?   @default("en")
+  billingPlan         String?
+  nextPaymentDate     DateTime?
+  paymentMethods      Json?
+  theme               String?   @default("light")
+  font                String?   @default("system")
+  notificationType    String?   @default("all")
+  mobileNotifications Boolean   @default(false)
+  communicationEmails Boolean   @default(false)
+  socialEmails        Boolean   @default(true)
+  marketingEmails     Boolean   @default(false)
+  securityEmails      Boolean   @default(true)
+  sidebarItems        String[]  @default([])
+  tablePreferences    Json?
+  skills              String[]  @default([])
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([userId])
+}
+
+// ── ACTIVITY & COMMENTS ────────────────────────────────────────────────────────
+
+model Activity {
+  id         String   @id @default(uuid())
+  type       String
+  message    String
+  entityType String?
+  entityId   String?
+  userId     String?
+  companyId  String?
+  branchId   String?
+  company    Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch     Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([userId])
+  @@index([entityType, entityId])
+}
+
+model Comment {
+  id         String   @id @default(uuid())
+  text       String
+  entityType String?
+  entityId   String?
+  userId     String?
+  companyId  String?
+  branchId   String?
+  company    Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch     Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([userId])
+  @@index([entityType, entityId])
+}
+
+// ── CHAT ──────────────────────────────────────────────────────────────────────
+
+model Chat {
+  id            String            @id @default(uuid())
+  type          ChatType          @default(DIRECT)
+  name          String?
+  companyId     String?
+  branchId      String?
+  company       Company?          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch        Branch?           @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  participants  ChatParticipant[]
+  messages      ChatMessage[]
+  lastMessageId String?           @unique
+  lastMessage   ChatMessage?      @relation("LastMessage", fields: [lastMessageId], references: [id], onDelete: SetNull)
+  isArchived    Boolean           @default(false)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model ChatParticipant {
+  id         String    @id @default(uuid())
+  chatId     String
+  userId     String
+  chat       Chat      @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastReadAt DateTime?
+  joinedAt   DateTime  @default(now())
+  leftAt     DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@unique([chatId, userId])
+  @@index([chatId])
+  @@index([userId])
+}
+
+model ChatMessage {
+  id          String            @id @default(uuid())
+  chatId      String
+  senderId    String
+  chat        Chat              @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender      User              @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  content     String?           @db.Text
+  type        ChatMessageType   @default(TEXT)
+  data        Json?
+  status      ChatMessageStatus @default(SENT)
+  replyToId   String?
+  replyTo     ChatMessage?      @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies     ChatMessage[]     @relation("MessageReplies")
+  lastMsgChat Chat?             @relation("LastMessage")
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([chatId])
+  @@index([senderId])
+  @@index([createdAt])
+}
+
+model ChatAccess {
+  id           String   @id @default(uuid())
+  userId       String
+  targetUserId String
+  user         User     @relation("ChatAccessGranted", fields: [userId], references: [id], onDelete: Cascade)
+  targetUser   User     @relation("ChatAccessReceived", fields: [targetUserId], references: [id], onDelete: Cascade)
+  companyId    String?
+  branchId     String?
+  company      Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch       Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userId, targetUserId, companyId, branchId])
+  @@index([userId])
+  @@index([targetUserId])
+  @@index([companyId])
+}
+
+// ── FEED & SOCIAL ─────────────────────────────────────────────────────────────
+
+model FeedPost {
+  id        String        @id @default(uuid())
+  content   String        @db.Text
+  image     String?
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId String?
+  branchId  String?
+  company   Company?      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?       @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  likes     FeedLike[]
+  comments  FeedComment[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([companyId])
+  @@index([branchId])
+  @@index([createdAt])
+}
+
+model FeedLike {
+  id        String   @id @default(uuid())
+  postId    String
+  post      FeedPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId])
+  @@index([postId])
+  @@index([userId])
+}
+
+model FeedComment {
+  id        String   @id @default(uuid())
+  text      String   @db.Text
+  postId    String
+  post      FeedPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([postId])
+  @@index([userId])
+}
+
+// ── COLLABS & WORK GROUPS ─────────────────────────────────────────────────────
+
+model Collab {
+  id          String             @id @default(uuid())
+  name        String
+  description String?            @db.Text
+  status      CollabStatus       @default(ACTIVE)
+  createdById String
+  createdBy   User               @relation("CreatedCollabs", fields: [createdById], references: [id], onDelete: Cascade)
+  companyId   String?
+  branchId    String?
+  company     Company?           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?            @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  members     CollabMember[]
+  invitations CollabInvitation[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@index([createdById])
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model CollabMember {
+  id         String           @id @default(uuid())
+  collabId   String
+  collab     Collab           @relation(fields: [collabId], references: [id], onDelete: Cascade)
+  userId     String?
+  user       User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email      String
+  name       String?
+  role       CollabMemberRole @default(MEMBER)
+  isExternal Boolean          @default(false)
+  joinedAt   DateTime         @default(now())
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  @@unique([collabId, email])
+  @@index([collabId])
+  @@index([userId])
+}
+
+model CollabInvitation {
+  id          String                 @id @default(uuid())
+  collabId    String
+  collab      Collab                 @relation(fields: [collabId], references: [id], onDelete: Cascade)
+  email       String
+  name        String?
+  role        CollabMemberRole       @default(MEMBER)
+  status      CollabInvitationStatus @default(PENDING)
+  invitedById String
+  invitedBy   User                   @relation("InvitedBy", fields: [invitedById], references: [id], onDelete: Cascade)
+  token       String                 @unique
+  expiresAt   DateTime
+  acceptedAt  DateTime?
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+
+  @@index([collabId])
+  @@index([email])
+  @@index([token])
+}
+
+model WorkGroup {
+  id          String              @id @default(uuid())
+  name        String
+  description String?             @db.Text
+  status      WorkGroupStatus     @default(ACTIVE)
+  createdById String
+  createdBy   User                @relation("CreatedWorkGroups", fields: [createdById], references: [id], onDelete: Cascade)
+  companyId   String?
+  branchId    String?
+  company     Company?            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?             @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  members     WorkGroupMember[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  @@index([createdById])
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model WorkGroupMember {
+  id          String              @id @default(uuid())
+  workGroupId String
+  workGroup   WorkGroup           @relation(fields: [workGroupId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        WorkGroupMemberRole @default(MEMBER)
+  joinedAt    DateTime            @default(now())
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  @@unique([workGroupId, userId])
+  @@index([workGroupId])
+  @@index([userId])
+}
+
+model UserConnection {
+  id        String           @id @default(uuid())
+  user1Id   String
+  user2Id   String
+  user1     User             @relation("User1Connections", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2     User             @relation("User2Connections", fields: [user2Id], references: [id], onDelete: Cascade)
+  status    ConnectionStatus @default(pending)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@unique([user1Id, user2Id])
+  @@index([user1Id])
+  @@index([user2Id])
+}
+
+// ── DOCUMENTS & CALENDAR ───────────────────────────────────────────────────────
+
+model RichDocument {
+  id          String           @id @default(uuid())
+  name        String
+  type        RichDocumentType
+  filePath    String?
+  fileSize    Int?
+  mimeType    String?
+  content     String?          @db.Text
+  createdById String
+  createdBy   User             @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  companyId   String?
+  branchId    String?
+  company     Company?         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?          @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  isShared    Boolean          @default(false)
+  isPublished Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([createdById])
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model CalendarEvent {
+  id          String      @id @default(uuid())
+  title       String
+  description String?
+  start       DateTime
+  end         DateTime
+  allDay      Boolean     @default(false)
+  color       EventColor? @default(sky)
+  location    String?
+  userId      String?
+  user        User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId   String?
+  branchId    String?
+  company     Company?    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?     @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([companyId])
+  @@index([branchId])
+  @@index([start])
+  @@index([end])
+}
+
+model Reminder {
+  id          String           @id @default(uuid())
+  note        String
+  priority    ReminderPriority @default(MEDIUM)
+  category    String?
+  dueDate     DateTime?
+  isCompleted Boolean          @default(false)
+  userId      String?
+  user        User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId   String?
+  branchId    String?
+  company     Company?         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?          @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([userId])
+  @@index([isCompleted])
+}
+
+// ── FITNESS ───────────────────────────────────────────────────────────────────
+
+model FitnessActivity {
+  id          String                @id @default(uuid())
+  title       String
+  description String?
+  type        FitnessActivityType
+  status      FitnessActivityStatus @default(PLANNED)
+  startTime   DateTime
+  endTime     DateTime?
+  duration    Int?
+  distance    Float?
+  calories    Int?
+  heartRate   Int?
+  notes       String?               @db.Text
+  userId      String
+  user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId   String?
+  branchId    String?
+  company     Company?              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?               @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  @@index([userId])
+  @@index([companyId])
+  @@index([branchId])
+  @@index([type])
+  @@index([status])
+}
+
+model NutritionEntry {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      DateTime @db.Date
+  calories  Int
+  carbs     Float
+  protein   Float
+  fats      Float
+  companyId String?
+  branchId  String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([companyId])
+}
+
+model SleepRecord {
+  id           String    @id @default(uuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date         DateTime  @db.Date
+  sleepHours   Float
+  sleepMinutes Int
+  quality      Int
+  bedTime      DateTime?
+  wakeTime     DateTime?
+  companyId    String?
+  branchId     String?
+  company      Company?  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch       Branch?   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([companyId])
+}
+
+// ── PRODUCTS & CATALOG ────────────────────────────────────────────────────────
+
+model ProductCategory {
+  id            String               @id @default(uuid())
+  name          String
+  description   String?
+  isActive      Boolean              @default(true)
+  companyId     String?
+  branchId      String?
+  company       Company?             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch        Branch?              @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  subCategories ProductSubCategory[]
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+
+  @@unique([name, companyId, branchId])
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model ProductSubCategory {
+  id          String          @id @default(uuid())
+  name        String
+  description String?
+  categoryId  String
+  category    ProductCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  isActive    Boolean         @default(true)
+  companyId   String?
+  branchId    String?
+  company     Company?        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?         @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([categoryId])
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model Product {
+  id              String      @id @default(uuid())
+  name            String
+  description     String?     @db.Text
+  image           String?
+  sku             String?     @unique
+  barcode         String?
+  price           Float
+  discountedPrice Float?
+  cost            Float?
+  chargeTax       Boolean     @default(false)
+  taxPercentage   Float?
+  discountType    String?
+  discountValue   Float?
+  quantity        Int         @default(0)
+  category        String?
+  sub_category    String?
+  brand           String?
+  productType     ProductType @default(SINGLE)
+  variants        Json?
+  variantGroups   Json?
+  compositeItems  Json?
+  customFields    Json?
+  status          String      @default("active")
+  companyId       String?
+  branchId        String?
+  createdById     String?
+  updatedById     String?
+  company         Company?    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch          Branch?     @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdBy       User?       @relation("CreatedProducts", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy       User?       @relation("UpdatedProducts", fields: [updatedById], references: [id], onDelete: SetNull)
+  orderItems      OrderItem[]
+  returnedItems   OrderReturnItem[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([status])
+  @@index([productType])
+}
+
+// ── CUSTOMERS & ORDERS ────────────────────────────────────────────────────────
+
+model Customer {
+  id         String    @id @default(uuid())
+  name       String
+  email      String?
+  phone      String?
+  address    String?
+  city       String?
+  state      String?
+  country    String?
+  postalCode String?
+  companyId  String?
+  branchId   String?
+  company    Company?  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch     Branch?   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  orders     Order[]
+  payments   CustomerPayment[]
+  returns    OrderReturn[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([email])
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  orderNumber     String      @unique
+  customerId      String
+  customer        Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  status          OrderStatus @default(PENDING)
+  type            OrderType   @default(SALE)
+  totalAmount     Float
+  subtotal        Float
+  tax             Float?      @default(0)
+  discount        Float?      @default(0)
+  shippingCost    Float?      @default(0)
+  currency        String?     @default("USD")
+  paymentMethod   String?
+  paymentStatus   String?
+  shippingAddress String?
+  notes           String?     @db.Text
+  orderDate       DateTime    @default(now())
+  shippedDate     DateTime?
+  deliveredDate   DateTime?
+  companyId       String?
+  branchId        String?
+  company         Company?    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch          Branch?     @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  items           OrderItem[]
+  payments        CustomerPayment[]
+  returns         OrderReturn[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([customerId])
+  @@index([status])
+  @@index([orderNumber])
+}
+
+model OrderItem {
+  id               String          @id @default(uuid())
+  orderId          String
+  order            Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId        String
+  product          Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity         Int
+  returnedQuantity Int             @default(0)
+  price            Float
+  discount         Float?          @default(0)
+  subtotal         Float
+  returns          OrderReturnItem[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model CustomerPayment {
+  id            String        @id @default(uuid())
+  paymentNumber String        @unique
+  customerId    String
+  customer      Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  orderId       String?
+  order         Order?        @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  amount        Float
+  paymentMethod PaymentMethod @default(CASH)
+  status        PaymentStatus @default(PENDING)
+  paymentDate   DateTime      @default(now())
+  reference     String?
+  notes         String?       @db.Text
+  companyId     String?
+  branchId      String?
+  company       Company?      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch        Branch?       @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([customerId])
+  @@index([status])
+  @@index([paymentNumber])
+}
+
+model Supplier {
+  id         String            @id @default(uuid())
+  name       String
+  email      String?
+  phone      String?
+  address    String?
+  city       String?
+  state      String?
+  country    String?
+  postalCode String?
+  companyId  String?
+  branchId   String?
+  company    Company?          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch     Branch?           @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  payments   SupplierPayment[]
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model SupplierPayment {
+  id            String        @id @default(uuid())
+  paymentNumber String        @unique
+  supplierId    String
+  supplier      Supplier      @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  amount        Float
+  paymentMethod PaymentMethod @default(CASH)
+  status        PaymentStatus @default(PENDING)
+  paymentDate   DateTime      @default(now())
+  reference     String?
+  notes         String?       @db.Text
+  companyId     String?
+  branchId      String?
+  company       Company?      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch        Branch?       @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([supplierId])
+  @@index([paymentNumber])
+}
+
+model OrderReturn {
+  id               String        @id @default(uuid())
+  returnNumber     String        @unique
+  orderId          String
+  order            Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  customerId       String
+  customer         Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  status           ReturnStatus  @default(PENDING)
+  returnReason     ReturnReason
+  returnReasonNote String?       @db.Text
+  returnDate       DateTime      @default(now())
+  processedDate    DateTime?
+  refundAmount     Float         @default(0)
+  refundMethod     RefundMethod?
+  refundStatus     PaymentStatus? @default(PENDING)
+  refundReference  String?
+  items            OrderReturnItem[]
+  notes            String?       @db.Text
+  processedById    String?
+  processedBy      User?         @relation("ProcessedReturns", fields: [processedById], references: [id], onDelete: SetNull)
+  companyId        String?
+  branchId         String?
+  company          Company?      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch           Branch?       @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([orderId])
+  @@index([customerId])
+  @@index([status])
+  @@index([returnNumber])
+}
+
+model OrderReturnItem {
+  id           String       @id @default(uuid())
+  returnId     String
+  return       OrderReturn  @relation(fields: [returnId], references: [id], onDelete: Cascade)
+  orderItemId  String
+  orderItem    OrderItem    @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  productId    String
+  product      Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity     Int
+  price        Float
+  refundAmount Float
+  reason       ReturnReason?
+  reasonNote   String?      @db.Text
+  condition    String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([returnId])
+  @@index([orderItemId])
+  @@index([productId])
+}
+
+// ── FILES & FOLDERS ───────────────────────────────────────────────────────────
+
+model Folder {
+  id             String      @id @default(uuid())
+  name           String
+  parentFolderId String?
+  parentFolder   Folder?     @relation("FolderHierarchy", fields: [parentFolderId], references: [id], onDelete: Cascade)
+  subfolders     Folder[]    @relation("FolderHierarchy")
+  files          MediaFile[]
+  starred        Boolean     @default(false)
+  userId         String?
+  companyId      String?
+  branchId       String?
+  user           User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company        Company?    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch         Branch?     @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([userId])
+  @@index([parentFolderId])
+}
+
+model MediaFile {
+  id           String        @id @default(uuid())
+  name         String
+  originalName String?
+  type         MediaFileType @default(OTHER)
+  mimeType     String?
+  size         Int
+  url          String?
+  thumbnailUrl String?
+  deviceType   String?
+  folderId     String?
+  folder       Folder?       @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  starred      Boolean       @default(false)
+  userId       String?
+  companyId    String?
+  branchId     String?
+  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company      Company?      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch       Branch?       @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([userId])
+  @@index([folderId])
+  @@index([type])
+}
+
+// ── PROJECTS ──────────────────────────────────────────────────────────────────
+
+model Project {
+  id            String        @id @default(uuid())
+  title         String
+  subtitle      String?
+  description   String?       @db.Text
+  status        ProjectStatus @default(PENDING)
+  progress      Int           @default(0)
+  startDate     DateTime?
+  endDate       DateTime?
+  deadline      DateTime?
+  budget        Float?
+  spent         Float?        @default(0)
+  clientName    String?
+  clientAvatar  String?
+  progressColor String?
+  badgeColor    String?
+  managerId     String?
+  manager       User?         @relation("ManagedProjects", fields: [managerId], references: [id], onDelete: SetNull)
+  companyId     String?
+  branchId      String?
+  company       Company?      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch        Branch?       @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  members       ProjectMember[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([managerId])
+  @@index([status])
+}
+
+model ProjectMember {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      String?
+  createdAt DateTime @default(now())
+
+  @@unique([projectId, userId])
+  @@index([projectId])
+  @@index([userId])
+}
+
+// ── MENU ITEMS ────────────────────────────────────────────────────────────────
+
+model MenuItem {
+  id          String     @id @default(uuid())
+  title       String
+  href        String
+  icon        String?
+  group       String?
+  parentId    String?
+  parent      MenuItem?  @relation("MenuItemChildren", fields: [parentId], references: [id], onDelete: Cascade)
+  children    MenuItem[] @relation("MenuItemChildren")
+  order       Int        @default(0)
+  isActive    Boolean    @default(true)
+  isComing    Boolean    @default(false)
+  isNew       Boolean    @default(false)
+  isDataBadge String?
+  newTab      Boolean    @default(false)
+  companyId   String?
+  company     Company?   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branchId    String?
+  branch      Branch?    @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([group, order])
+  @@index([parentId, order])
+  @@index([companyId])
+  @@index([branchId])
+}
+
+// ── SETTINGS & SYSTEM ─────────────────────────────────────────────────────────
+
+model SystemSetting {
+  id        String   @id @default(uuid())
+  key       String
+  value     String   @db.Text
+  companyId String?
+  branchId  String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([key, companyId, branchId])
+  @@index([companyId])
+  @@index([branchId])
+  @@index([key])
+}
+
+model StorageQuota {
+  id           String   @id @default(uuid())
+  companyId    String?
+  branchId     String?
+  company      Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch       Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  totalStorage BigInt   @default(10737418240)
+  usedStorage  BigInt   @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([companyId, branchId])
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model LoginHistory {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId String?
+  branchId  String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  ipAddress String?
+  latitude  Float?
+  longitude Float?
+  city      String?
+  region    String?
+  country   String?
+  timezone  String?
+  userAgent String?
+  device    String?
+  browser   String?
+  os        String?
+  loginAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([companyId])
+  @@index([branchId])
+  @@index([loginAt])
+}
+
+model ExceptionLog {
+  id            String    @id @default(uuid())
+  type          String
+  severity      String
+  message       String    @db.Text
+  stack         String?   @db.Text
+  source        String
+  userId        String?
+  user          User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  companyId     String?
+  branchId      String?
+  company       Company?  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch        Branch?   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  requestUrl    String?
+  requestMethod String?
+  userAgent     String?   @db.Text
+  ipAddress     String?
+  resolved      Boolean   @default(false)
+  resolvedAt    DateTime?
+  resolvedBy    String?
+  notes         String?   @db.Text
+  metadata      Json?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([severity])
+  @@index([resolved])
+  @@index([source])
+}
+
+// ── TABLES (RESTAURANT) ───────────────────────────────────────────────────────
+
+model TableCategory {
+  id        String            @id @default(uuid())
+  name      String
+  companyId String?
+  branchId  String?
+  company   Company?          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch    Branch?           @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  tables    RestaurantTable[]
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@unique([name, companyId, branchId])
+  @@index([companyId])
+  @@index([branchId])
+}
+
+model RestaurantTable {
+  id         String        @id @default(uuid())
+  name       String
+  status     TableStatus   @default(available)
+  categoryId String
+  category   TableCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  companyId  String?
+  branchId   String?
+  company    Company?      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch     Branch?       @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@index([categoryId])
+  @@index([companyId])
+  @@index([branchId])
+  @@index([status])
+}
+
+// ── REPORTS ───────────────────────────────────────────────────────────────────
+
+model ReportTemplate {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  entityType  String
+  columns     Json
+  filters     Json?
+  sorting     Json?
+  companyId   String?
+  branchId    String?
+  company     Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdById String?
+  updatedById String?
+  createdBy   User?    @relation("CreatedReportTemplates", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy   User?    @relation("UpdatedReportTemplates", fields: [updatedById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([entityType])
+}
+
+model PdfReport {
+  id           String   @id @default(uuid())
+  name         String
+  description  String?
+  entityType   String?
+  layout       Json
+  pageSettings Json
+  isActive     Boolean  @default(true)
+  companyId    String?
+  branchId     String?
+  company      Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch       Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdById  String?
+  updatedById  String?
+  createdBy    User?    @relation("CreatedPdfReports", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy    User?    @relation("UpdatedPdfReports", fields: [updatedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([entityType])
+}
+
+// ── DEAL DASHBOARDS ───────────────────────────────────────────────────────────
+
+model DealDashboard {
+  id          String                   @id @default(uuid())
+  name        String
+  description String?
+  filter      Json
+  layout      Json
+  widgets     Json
+  visibility  DashboardVisibility      @default(PRIVATE)
+  companyId   String
+  branchId    String?
+  company     Company                  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?                  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdById String
+  createdBy   User                     @relation("CreatedDealDashboards", fields: [createdById], references: [id], onDelete: Cascade)
+  roleShares  DealDashboardRoleShare[]
+  userShares  DealDashboardUserShare[]
+  userPrefs   DealDashboardUserPref[]
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([createdById])
+  @@index([visibility])
+}
+
+model DealDashboardRoleShare {
+  id          String        @id @default(uuid())
+  dashboardId String
+  crmRoleId   String
+  dashboard   DealDashboard @relation(fields: [dashboardId], references: [id], onDelete: Cascade)
+  crmRole     CrmRole       @relation(fields: [crmRoleId], references: [id], onDelete: Cascade)
+  createdAt   DateTime      @default(now())
+
+  @@unique([dashboardId, crmRoleId])
+  @@index([dashboardId])
+  @@index([crmRoleId])
+}
+
+model DealDashboardUserShare {
+  id          String        @id @default(uuid())
+  dashboardId String
+  userId      String
+  dashboard   DealDashboard @relation(fields: [dashboardId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime      @default(now())
+
+  @@unique([dashboardId, userId])
+  @@index([dashboardId])
+  @@index([userId])
+}
+
+model DealDashboardUserPref {
+  id          String        @id @default(uuid())
+  dashboardId String
+  userId      String
+  order       Int           @default(0)
+  isPinned    Boolean       @default(false)
+  isCollapsed Boolean       @default(false)
+  dashboard   DealDashboard @relation(fields: [dashboardId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  updatedAt   DateTime      @updatedAt
+
+  @@unique([dashboardId, userId])
+  @@index([userId])
+  @@index([dashboardId])
+}
+
+// ── FABRIC & CUTTING ──────────────────────────────────────────────────────────
+
+model FabricType {
+  id            String   @id @default(uuid())
+  name          String
+  weightGsm     Decimal? @db.Decimal(10, 2)
+  waterPerMeter Decimal? @db.Decimal(10, 2)
+  carbonFactor  Decimal? @db.Decimal(10, 4)
+
+  rolls FabricRoll[]
+}
+
+model FabricRoll {
+  id              String   @id @default(uuid())
+  rollNumber      String   @unique
+  fabricTypeId    String
+  color           String?
+  totalMeters     Decimal  @db.Decimal(10, 2)
+  availableMeters Decimal  @db.Decimal(10, 2)
+  costPerMeter    Decimal? @db.Decimal(10, 2)
+  location        String?
+  status          String   @default("available")
+  qrCode          String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  fabricType FabricType         @relation(fields: [fabricTypeId], references: [id])
+  orderRolls CuttingOrderRoll[]
+}
+
+model CuttingOrder {
+  id                   String    @id @default(uuid())
+  orderNumber          String    @unique
+  branchId             String
+  companyId            String?
+  triggeredBy          String    @default("manual")
+  referenceId          String?
+  status               String    @default("draft")
+  approvalStatus       String    @default("not_required")
+  approvedBy           String?
+  approvedAt           DateTime?
+  rejectionReason      String?
+  cutDate              DateTime?
+  cutBy                String?
+  shiftId              String?
+  salesOrderId         String?
+  totalFabricAllocated Decimal?  @db.Decimal(10, 2)
+  totalFabricConsumed  Decimal?  @db.Decimal(10, 2)
+  totalWastage         Decimal?  @db.Decimal(10, 2)
+  wastagePercent       Decimal?  @db.Decimal(5, 2)
+  yieldPercent         Decimal?  @db.Decimal(5, 2)
+  wasteKg              Decimal?  @db.Decimal(10, 3)
+  waterUsageL          Decimal?  @db.Decimal(10, 2)
+  carbonScore          Decimal?  @db.Decimal(10, 4)
+  notes                String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  branch          Branch             @relation(fields: [branchId], references: [id])
+  company         Company?           @relation(fields: [companyId], references: [id])
+  rolls           CuttingOrderRoll[]
+  lines           CuttingOrderLine[]
+  batches         CuttingBatch[]
+  pieces          CutPiece[]
+  markerPlan      MarkerPlan?
+  cost            CuttingOrderCost?
+  documents       CuttingDocument[]
+  approvalHistory ApprovalHistory[]
+}
+
+model CuttingOrderRoll {
+  id              String   @id @default(uuid())
+  cuttingOrderId  String
+  fabricRollId    String
+  metersAllocated Decimal  @db.Decimal(10, 2)
+  metersConsumed  Decimal? @db.Decimal(10, 2)
+  rollSequence    Int
+
+  cuttingOrder CuttingOrder @relation(fields: [cuttingOrderId], references: [id], onDelete: Cascade)
+  fabricRoll   FabricRoll   @relation(fields: [fabricRollId], references: [id])
+}
+
+model CuttingOrderLine {
+  id             String   @id @default(uuid())
+  cuttingOrderId String
+  pieceName      String
+  lengthCm       Decimal  @db.Decimal(8, 2)
+  widthCm        Decimal  @db.Decimal(8, 2)
+  quantity       Int
+  fabricConsumed Decimal? @db.Decimal(10, 4)
+  destination    String   @default("inventory")
+  destinationId  String?
+  sequence       Int      @default(0)
+  qrCode         String?
+
+  cuttingOrder CuttingOrder @relation(fields: [cuttingOrderId], references: [id], onDelete: Cascade)
+}
+
+model CuttingBatch {
+  id             String    @id @default(uuid())
+  cuttingOrderId String
+  batchNumber    Int
+  cutterId       String
+  machineId      String?
+  shiftId        String?
+  plannedPieces  Int
+  actualPieces   Int?
+  defectPieces   Int?
+  startTime      DateTime?
+  endTime        DateTime?
+  status         String    @default("pending")
+  notes          String?
+
+  cuttingOrder CuttingOrder @relation(fields: [cuttingOrderId], references: [id], onDelete: Cascade)
+  cutter       User         @relation(fields: [cutterId], references: [id])
+}
+
+model CutPiece {
+  id               String   @id @default(uuid())
+  cuttingOrderId   String
+  pieceName        String
+  dimensions       String
+  quantityProduced Int
+  quantityDefect   Int      @default(0)
+  status           String   @default("in_stock")
+  qrCode           String?
+  createdAt        DateTime @default(now())
+
+  cuttingOrder CuttingOrder @relation(fields: [cuttingOrderId], references: [id], onDelete: Cascade)
+}
+
+model MarkerPlan {
+  id             String   @id @default(uuid())
+  cuttingOrderId String   @unique
+  markerWidthCm  Decimal  @db.Decimal(8, 2)
+  markerLengthCm Decimal  @db.Decimal(8, 2)
+  piecesPerLayer Int
+  noOfLayers     Int
+  efficiencyPct  Decimal? @db.Decimal(5, 2)
+  createdBy      String?
+  notes          String?
+
+  cuttingOrder CuttingOrder @relation(fields: [cuttingOrderId], references: [id], onDelete: Cascade)
+}
+
+model CuttingOrderCost {
+  id             String   @id @default(uuid())
+  cuttingOrderId String   @unique
+  fabricCost     Decimal? @db.Decimal(12, 2)
+  laborCost      Decimal? @db.Decimal(12, 2)
+  machineCost    Decimal? @db.Decimal(12, 2)
+  wastageCost    Decimal? @db.Decimal(12, 2)
+  overheadPct    Decimal? @db.Decimal(5, 2)
+  totalCost      Decimal? @db.Decimal(12, 2)
+  costPerPiece   Decimal? @db.Decimal(10, 4)
+  currency       String   @default("PKR")
+
+  cuttingOrder CuttingOrder @relation(fields: [cuttingOrderId], references: [id], onDelete: Cascade)
+}
+
+model CuttingDocument {
+  id             String   @id @default(uuid())
+  cuttingOrderId String
+  fileName       String
+  fileType       String
+  fileUrl        String
+  fileSize       Int?
+  description    String?
+  uploadedBy     String?
+  createdAt      DateTime @default(now())
+
+  cuttingOrder CuttingOrder @relation(fields: [cuttingOrderId], references: [id], onDelete: Cascade)
+}
+
+model ApprovalHistory {
+  id             String   @id @default(uuid())
+  cuttingOrderId String
+  action         String
+  actionBy       String
+  reason         String?
+  createdAt      DateTime @default(now())
+
+  cuttingOrder CuttingOrder @relation(fields: [cuttingOrderId], references: [id], onDelete: Cascade)
+}
+
+model Shift {
+  id        String  @id @default(uuid())
+  name      String
+  startTime String
+  endTime   String
+  isActive  Boolean @default(true)
+}
+
+// ── BPM ───────────────────────────────────────────────────────────────────────
+
+model BpmProcess {
+  id          String   @id @default(uuid())
+  name        String
+  module      String
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  stages       BpmStage[]
+  tasks        BpmTask[]
+  requestTypes BpmRequestType[]
+}
+
+model BpmStage {
+  id         String  @id @default(uuid())
+  processId  String
+  name       String
+  sequence   Int
+  color      String?
+  isTerminal Boolean @default(false)
+
+  process BpmProcess @relation(fields: [processId], references: [id], onDelete: Cascade)
+  tasks   BpmTask[]
+}
+
+model BpmTask {
+  id          String    @id @default(uuid())
+  processId   String
+  stageId     String
+  entityType  String
+  entityId    String
+  title       String
+  description String?
+  priority    String    @default("medium")
+  assignedTo  String?
+  createdBy   String?
+  dueDate     DateTime?
+  completedAt DateTime?
+  metadata    Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  process  BpmProcess       @relation(fields: [processId], references: [id])
+  stage    BpmStage         @relation(fields: [stageId], references: [id])
+  assignee User?            @relation(fields: [assignedTo], references: [id])
+  history  BpmTaskHistory[]
+}
+
+model BpmTaskHistory {
+  id          String   @id @default(uuid())
+  taskId      String
+  fromStageId String?
+  toStageId   String
+  changedBy   String
+  comment     String?
+  createdAt   DateTime @default(now())
+
+  task BpmTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
+model BpmRequestType {
+  id               String   @id @default(uuid())
+  name             String
+  description      String?
+  color            String?
+  icon             String?
+  prefix           String?
+  entityType       String?
+  customEntityName String?
+  processId        String?
+  slaDays          Int?
+  isActive         Boolean  @default(true)
+  companyId        String?
+  branchId         String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  process BpmProcess? @relation(fields: [processId], references: [id])
+
+  @@index([entityType])
+  @@index([companyId])
+}
+
+// ── NOTIFICATIONS ─────────────────────────────────────────────────────────────
+
+model Notification {
+  id            String   @id @default(uuid())
+  userId        String
+  type          String
+  title         String
+  message       String
+  referenceId   String?
+  referenceType String?
+  isRead        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ── AUDIT ─────────────────────────────────────────────────────────────────────
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  entityType String
+  entityId   String
+  action     String
+  changedBy  String
+  oldValues  Json?
+  newValues  Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [changedBy], references: [id])
+}
+
+// ── PLM — General Definitions ─────────────────────────────────────────────────
+
+model StyleSampleType {
+  id          String  @id @default(uuid())
+  name        String
+  code        String  @unique
+  description String?
+  sequence    Int     @default(0)
+  isActive    Boolean @default(true)
+
+  sampleCards SampleCard[]
+}
+
+model DesignDetailType {
+  id          String  @id @default(uuid())
+  name        String
+  category    String?
+  description String?
+  isActive    Boolean @default(true)
+
+  styleCards StyleCardDetail[]
+}
+
+model MeasurementDefinition {
+  id       String  @id @default(uuid())
+  name     String
+  code     String  @unique
+  unit     String  @default("cm")
+  bodyPart String?
+  sequence Int     @default(0)
+  isActive Boolean @default(true)
+
+  chartLines          MeasurementChartLine[]
+  productMeasurements ProductMeasurement[]
+}
+
+model MeasurementChart {
+  id          String   @id @default(uuid())
+  name        String
+  category    String?
+  gender      String?
+  sizes       Json
+  description String?
+  isActive    Boolean  @default(true)
+  branchId    String?
+  createdAt   DateTime @default(now())
+
+  lines      MeasurementChartLine[]
+  styleCards StyleCard[]
+}
+
+model MeasurementChartLine {
+  id                      String   @id @default(uuid())
+  chartId                 String
+  measurementDefinitionId String
+  tolerance               Decimal? @db.Decimal(5, 2)
+  values                  Json
+
+  chart                 MeasurementChart      @relation(fields: [chartId], references: [id], onDelete: Cascade)
+  measurementDefinition MeasurementDefinition @relation(fields: [measurementDefinitionId], references: [id])
+}
+
+model DepartmentCard {
+  id          String   @id @default(uuid())
+  name        String
+  code        String   @unique
+  headId      String?
+  description String?
+  isActive    Boolean  @default(true)
+  branchId    String
+  createdAt   DateTime @default(now())
+
+  employees    EmployeeCard[]
+  processCards ProcessCard[]
+}
+
+model ProcessCard {
+  id           String   @id @default(uuid())
+  name         String
+  code         String   @unique
+  departmentId String
+  description  String?
+  standardTime Decimal? @db.Decimal(8, 2)
+  resourceType String?
+  isActive     Boolean  @default(true)
+
+  department    DepartmentCard      @relation(fields: [departmentId], references: [id])
+  studyLines    StudyTemplateLine[]
+  criticalPaths CriticalPathTask[]
+}
+
+model EmployeeCard {
+  id             String    @id @default(uuid())
+  employeeNumber String    @unique
+  userId         String?
+  name           String
+  departmentId   String
+  designation    String?
+  skills         Json?
+  hourlyRate     Decimal?  @db.Decimal(10, 2)
+  efficiency     Decimal?  @db.Decimal(5, 2)
+  isActive       Boolean   @default(true)
+  joiningDate    DateTime?
+  branchId       String
+  createdAt      DateTime  @default(now())
+
+  department DepartmentCard @relation(fields: [departmentId], references: [id])
+}
+
+model ResourceCard {
+  id           String   @id @default(uuid())
+  name         String
+  code         String   @unique
+  type         String
+  departmentId String?
+  capacity     Decimal? @db.Decimal(10, 2)
+  capacityUnit String?
+  costPerHour  Decimal? @db.Decimal(10, 2)
+  status       String   @default("available")
+  description  String?
+  branchId     String
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+}
+
+model StudyTemplateCard {
+  id            String   @id @default(uuid())
+  name          String
+  styleCardId   String?
+  productCardId String?
+  description   String?
+  totalTime     Decimal? @db.Decimal(10, 2)
+  isActive      Boolean  @default(true)
+  branchId      String
+  createdBy     String
+  createdAt     DateTime @default(now())
+
+  lines     StudyTemplateLine[]
+  styleCard StyleCard?          @relation(fields: [styleCardId], references: [id])
+}
+
+model StudyTemplateLine {
+  id              String  @id @default(uuid())
+  studyTemplateId String
+  processCardId   String
+  sequence        Int
+  standardTime    Decimal @db.Decimal(8, 2)
+  resourceCardId  String?
+  employeeCardId  String?
+  notes           String?
+
+  studyTemplate StudyTemplateCard @relation(fields: [studyTemplateId], references: [id], onDelete: Cascade)
+  processCard   ProcessCard       @relation(fields: [processCardId], references: [id])
+}
+
+// ── PLM — Style & Design ──────────────────────────────────────────────────────
+
+model MoodBoard {
+  id          String   @id @default(uuid())
+  title       String
+  season      String?
+  year        Int?
+  theme       String?
+  description String?
+  images      Json?
+  colors      Json?
+  tags        Json?
+  status      String   @default("draft")
+  branchId    String
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  styleCards StyleCard[]
+}
+
+model StyleCard {
+  id                 String   @id @default(uuid())
+  styleNumber        String   @unique
+  title              String
+  season             String?
+  year               Int?
+  moodBoardId        String?
+  measurementChartId String?
+  gender             String?
+  category           String?
+  description        String?
+  techPackUrl        String?
+  status             String   @default("concept")
+  branchId           String
+  createdBy          String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  moodBoard        MoodBoard?          @relation(fields: [moodBoardId], references: [id])
+  measurementChart MeasurementChart?   @relation(fields: [measurementChartId], references: [id])
+  details          StyleCardDetail[]
+  sampleCards      SampleCard[]
+  productCards     ProductCard[]
+  studyTemplates   StudyTemplateCard[]
+  criticalPath     CriticalPath?
+  plmTasks         PlmTask[]
+  plmOrders        PlmOrder[]
+}
+
+model StyleCardDetail {
+  id                 String  @id @default(uuid())
+  styleCardId        String
+  designDetailTypeId String
+  description        String?
+  imageUrl           String?
+  notes              String?
+
+  styleCard        StyleCard        @relation(fields: [styleCardId], references: [id], onDelete: Cascade)
+  designDetailType DesignDetailType @relation(fields: [designDetailTypeId], references: [id])
+}
+
+// ── PLM — Swatches & Products ─────────────────────────────────────────────────
+
+model SwatchCard {
+  id           String   @id @default(uuid())
+  swatchNumber String   @unique
+  fabricTypeId String?
+  supplierName String?
+  colorName    String
+  colorCode    String?
+  pantoneCode  String?
+  composition  String?
+  gsm          Decimal? @db.Decimal(8, 2)
+  width        Decimal? @db.Decimal(8, 2)
+  finishType   String?
+  washCare     String?
+  image        String?
+  costPerMeter Decimal? @db.Decimal(10, 2)
+  moq          Int?
+  leadTimeDays Int?
+  status       String   @default("active")
+  notes        String?
+  branchId     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  productCards ProductCardSwatch[]
+}
+
+model ProductCard {
+  id            String   @id @default(uuid())
+  productNumber String   @unique
+  styleCardId   String?
+  title         String
+  category      String?
+  subCategory   String?
+  gender        String?
+  season        String?
+  year          Int?
+  description   String?
+  techPackUrl   String?
+  sketchUrl     String?
+  status        String   @default("draft")
+  fabricTypeId  String?
+  colorways     Json?
+  sizes         Json?
+  targetCost    Decimal? @db.Decimal(12, 2)
+  actualCost    Decimal? @db.Decimal(12, 2)
+  currency      String   @default("PKR")
+  tags          Json?
+  images        Json?
+  branchId      String
+  createdBy     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  styleCard    StyleCard?          @relation(fields: [styleCardId], references: [id])
+  swatches     ProductCardSwatch[]
+  measurements ProductMeasurement[]
+}
+
+model ProductCardSwatch {
+  productCardId String
+  swatchCardId  String
+  isPrimary     Boolean @default(false)
+
+  productCard ProductCard @relation(fields: [productCardId], references: [id], onDelete: Cascade)
+  swatchCard  SwatchCard  @relation(fields: [swatchCardId], references: [id], onDelete: Cascade)
+
+  @@id([productCardId, swatchCardId])
+}
+
+model ProductMeasurement {
+  id                      String   @id @default(uuid())
+  productCardId           String
+  measurementDefinitionId String
+  size                    String
+  value                   Decimal  @db.Decimal(8, 2)
+  tolerance               Decimal? @db.Decimal(5, 2)
+
+  productCard           ProductCard           @relation(fields: [productCardId], references: [id], onDelete: Cascade)
+  measurementDefinition MeasurementDefinition @relation(fields: [measurementDefinitionId], references: [id])
+}
+
+// ── PLM — Samples ─────────────────────────────────────────────────────────────
+
+model SampleCard {
+  id           String    @id @default(uuid())
+  sampleNumber String    @unique
+  styleCardId  String?
+  sampleTypeId String
+  title        String
+  description  String?
+  season       String?
+  year         Int?
+  status       String    @default("draft")
+  fabricTypeId String?
+  colorway     String?
+  size         String?
+  quantity     Int?
+  assignedTo   String?
+  dueDate      DateTime?
+  cost         Decimal?  @db.Decimal(12, 2)
+  currency     String    @default("PKR")
+  images       Json?
+  attachments  Json?
+  notes        String?
+  branchId     String
+  createdBy    String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  sampleType StyleSampleType     @relation(fields: [sampleTypeId], references: [id])
+  styleCard  StyleCard?          @relation(fields: [styleCardId], references: [id])
+  history    SampleCardHistory[]
+}
+
+model SampleCardHistory {
+  id           String   @id @default(uuid())
+  sampleCardId String
+  action       String
+  fromStatus   String?
+  toStatus     String?
+  changedBy    String
+  notes        String?
+  createdAt    DateTime @default(now())
+
+  sampleCard SampleCard @relation(fields: [sampleCardId], references: [id], onDelete: Cascade)
+}
+
+// ── PLM — Templates ───────────────────────────────────────────────────────────
+
+model PlmTemplate {
+  id          String   @id @default(uuid())
+  name        String
+  type        String
+  description String?
+  structure   Json
+  isDefault   Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  branchId    String?
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ── PLM — Orders & Tasks ──────────────────────────────────────────────────────
+
+model PlmOrder {
+  id            String    @id @default(uuid())
+  orderNumber   String    @unique
+  styleCardId   String
+  productCardId String?
+  buyerName     String?
+  quantity      Int
+  sizes         Json?
+  deliveryDate  DateTime?
+  status        String    @default("pending")
+  totalCost     Decimal?  @db.Decimal(12, 2)
+  currency      String    @default("PKR")
+  notes         String?
+  branchId      String
+  createdBy     String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  styleCard StyleCard @relation(fields: [styleCardId], references: [id])
+  tasks     PlmTask[]
+  orderType String    @default("local")
+}
+
+model PlmTask {
+  id           String    @id @default(uuid())
+  taskNumber   String    @unique
+  plmOrderId   String?
+  styleCardId  String?
+  bpmTaskId    String?
+  title        String
+  description  String?
+  taskType     String
+  assignedTo   String?
+  departmentId String?
+  priority     String    @default("medium")
+  status       String    @default("pending")
+  plannedStart DateTime?
+  plannedEnd   DateTime?
+  actualStart  DateTime?
+  actualEnd    DateTime?
+  estimatedHrs Decimal?  @db.Decimal(8, 2)
+  actualHrs    Decimal?  @db.Decimal(8, 2)
+  notes        String?
+  branchId     String
+  createdBy    String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  plmOrder  PlmOrder?  @relation(fields: [plmOrderId], references: [id])
+  styleCard StyleCard? @relation(fields: [styleCardId], references: [id])
+}
+
+// ── PLM — Critical Path ───────────────────────────────────────────────────────
+
+model CriticalPath {
+  id          String   @id @default(uuid())
+  styleCardId String   @unique
+  name        String
+  startDate   DateTime
+  endDate     DateTime
+  status      String   @default("active")
+  createdAt   DateTime @default(now())
+
+  styleCard StyleCard          @relation(fields: [styleCardId], references: [id])
+  tasks     CriticalPathTask[]
+}
+
+model CriticalPathTask {
+  id             String    @id @default(uuid())
+  criticalPathId String
+  processCardId  String?
+  title          String
+  sequence       Int
+  durationDays   Int
+  plannedStart   DateTime
+  plannedEnd     DateTime
+  actualStart    DateTime?
+  actualEnd      DateTime?
+  dependsOn      Json?
+  assignedTo     String?
+  departmentId   String?
+  status         String    @default("pending")
+  isCritical     Boolean   @default(false)
+  delayDays      Int?
+  notes          String?
+
+  criticalPath CriticalPath @relation(fields: [criticalPathId], references: [id], onDelete: Cascade)
+  processCard  ProcessCard? @relation(fields: [processCardId], references: [id])
+}
+
+// ── PLM — Document Management ─────────────────────────────────────────────────
+
+model PlmDocument {
+  id             String   @id @default(uuid())
+  title          String
+  documentNumber String   @unique
+  entityType     String
+  entityId       String
+  category       String
+  fileUrl        String
+  fileName       String
+  fileType       String
+  fileSize       Int?
+  version        String   @default("1.0")
+  isLatest       Boolean  @default(true)
+  uploadedBy     String
+  branchId       String
+  createdAt      DateTime @default(now())
+}
+
+// ══════════════════════════════════════════════════════════
+// DOCKET MANAGEMENT MODULE
+// ══════════════════════════════════════════════════════════
+
+model DocumentTypeCard {
+  id               String   @id @default(uuid())
+  name             String
+  code             String   @unique
+  category         String
+  description      String?
+  allowedFormats   Json
+  maxSizeMb        Int      @default(10)
+  requiresApproval Boolean  @default(true)
+  expiryDays       Int?
+  isActive         Boolean  @default(true)
+  branchId         String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  docketTemplateItems DocketTemplateItem[]
+  docketItems         DocketItem[]
+
+  @@index([category])
+  @@index([isActive])
+}
+
+model DocketTemplate {
+  id          String   @id @default(uuid())
+  name        String
+  code        String   @unique
+  entityType  String
+  description String?
+  isDefault   Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  branchId    String?
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items   DocketTemplateItem[]
+  dockets Docket[]
+
+  @@index([entityType])
+  @@index([isDefault])
+}
+
+model DocketTemplateItem {
+  id                 String   @id @default(uuid())
+  templateId         String
+  documentTypeCardId String
+  isRequired         Boolean  @default(true)
+  sequence           Int      @default(0)
+  defaultDueDays     Int?
+  approvalRequired   Boolean  @default(true)
+  approverRoleId     String?
+  notes              String?
+
+  template         DocketTemplate    @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  documentTypeCard DocumentTypeCard  @relation(fields: [documentTypeCardId], references: [id])
+
+  @@index([templateId])
+}
+
+model ApprovalWorkflow {
+  id         String   @id @default(uuid())
+  name       String
+  entityType String
+  steps      Json
+  isActive   Boolean  @default(true)
+  branchId   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([entityType])
+}
+
+model Docket {
+  id            String    @id @default(uuid())
+  docketNumber  String    @unique
+  entityType    String
+  entityId      String
+  templateId    String?
+  title         String
+  status        String    @default("incomplete")
+  completeness  Decimal   @default(0) @db.Decimal(5, 2)
+  totalItems    Int       @default(0)
+  approvedItems Int       @default(0)
+  pendingItems  Int       @default(0)
+  missingItems  Int       @default(0)
+  lockedAt      DateTime?
+  lockedBy      String?
+  approvedAt    DateTime?
+  approvedBy    String?
+  branchId      String
+  createdBy     String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  template   DocketTemplate?  @relation(fields: [templateId], references: [id])
+  items      DocketItem[]
+  shareLinks DocketShareLink[]
+  auditLogs  DocketAuditLog[]
+
+  @@unique([entityType, entityId])
+  @@index([entityType])
+  @@index([status])
+  @@index([branchId])
+}
+
+model DocketItem {
+  id                 String    @id @default(uuid())
+  docketId           String
+  documentTypeCardId String
+  title              String
+  isRequired         Boolean   @default(true)
+  sequence           Int       @default(0)
+  status             String    @default("missing")
+  currentVersion     String?
+  approvedBy         String?
+  approvedAt         DateTime?
+  rejectedBy         String?
+  rejectedAt         DateTime?
+  rejectionReason    String?
+  dueDate            DateTime?
+  expiryDate         DateTime?
+  notes              String?
+
+  docket           Docket          @relation(fields: [docketId], references: [id], onDelete: Cascade)
+  documentTypeCard DocumentTypeCard @relation(fields: [documentTypeCardId], references: [id])
+  documents        DocketDocument[]
+  approvalHistory  DocketItemApproval[]
+
+  @@index([docketId])
+  @@index([status])
+}
+
+model DocketDocument {
+  id             String   @id @default(uuid())
+  documentNumber String   @unique
+  docketItemId   String
+  fileName       String
+  fileUrl        String
+  fileType       String
+  fileSizeMb     Decimal  @db.Decimal(8, 2)
+  version        String
+  versionNotes   String?
+  isLatest       Boolean  @default(true)
+  isWatermarked  Boolean  @default(false)
+  watermarkedUrl String?
+  uploadedBy     String
+  uploadedAt     DateTime @default(now())
+
+  docketItem DocketItem @relation(fields: [docketItemId], references: [id], onDelete: Cascade)
+
+  @@index([docketItemId])
+  @@index([isLatest])
+}
+
+model DocketItemApproval {
+  id              String   @id @default(uuid())
+  docketItemId    String
+  action          String
+  actionBy        String
+  fromStatus      String?
+  toStatus        String
+  comments        String?
+  documentVersion String?
+  createdAt       DateTime @default(now())
+
+  docketItem DocketItem @relation(fields: [docketItemId], references: [id], onDelete: Cascade)
+
+  @@index([docketItemId])
+}
+
+model DocketShareLink {
+  id             String    @id @default(uuid())
+  docketId       String
+  token          String    @unique
+  title          String?
+  accessType     String    @default("view")
+  sharedWith     String?
+  sharedBy       String
+  expiresAt      DateTime
+  isActive       Boolean   @default(true)
+  lastAccessedAt DateTime?
+  accessCount    Int       @default(0)
+  allowedItems   Json?
+  password       String?
+  watermark      Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+
+  docket     Docket               @relation(fields: [docketId], references: [id], onDelete: Cascade)
+  accessLogs ShareLinkAccessLog[]
+
+  @@index([token])
+  @@index([docketId])
+}
+
+model ShareLinkAccessLog {
+  id          String   @id @default(uuid())
+  shareLinkId String
+  accessedAt  DateTime @default(now())
+  ipAddress   String?
+  userAgent   String?
+  action      String
+  documentId  String?
+
+  shareLink DocketShareLink @relation(fields: [shareLinkId], references: [id], onDelete: Cascade)
+
+  @@index([shareLinkId])
+}
+
+model ExternalReviewRequest {
+  id              String    @id @default(uuid())
+  docketId        String
+  reviewerEmail   String
+  reviewerName    String?
+  reviewerCompany String?
+  message         String?
+  token           String    @unique
+  status          String    @default("pending")
+  expiresAt       DateTime
+  comments        String?
+  reviewedAt      DateTime?
+  createdBy       String
+  createdAt       DateTime  @default(now())
+
+  @@index([token])
+  @@index([docketId])
+}
+
+model DocketAuditLog {
+  id        String   @id @default(uuid())
+  docketId  String
+  action    String
+  entityRef String?
+  changedBy String
+  oldValues Json?
+  newValues Json?
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  docket Docket @relation(fields: [docketId], references: [id], onDelete: Cascade)
+
+  @@index([docketId])
+}

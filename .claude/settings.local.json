@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs grep -l \"IS_PUBLIC_KEY\\\\|@Public\\(\\)\")",
+      "Bash(npx prisma *)",
+      "Bash(npx tsc *)",
+      "Bash(node_modules/.bin/tsc --noEmit)",
+      "Bash(mkdir -p \"d:/NexusCore/frontend/app/\\(public\\)/shared/[token]\" 2>/dev/null; echo \"done\")"
+    ],
+    "additionalDirectories": [
+      "d:\\NexusCore\\frontend\\app\\(public)\\shared"
+    ]
+  }
+}
