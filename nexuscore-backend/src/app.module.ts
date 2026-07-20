@@ -34,6 +34,7 @@ import { PipelineModule } from './modules/pipeline/pipeline.module';
 import { FilesModule } from './modules/files/files.module';
 import { CommunicationModule } from './modules/communication/communication.module';
 import { FeedModule } from './modules/feed/feed.module';
+import { DocumentsModule } from './modules/documents/documents.module';
 import { CollabModule } from './modules/collab/collab.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { FitnessModule } from './modules/fitness/fitness.module';
@@ -42,6 +43,8 @@ import { LogsModule } from './modules/logs/logs.module';
 import { UserSettingsModule } from './modules/user-settings/user-settings.module';
 import { AppConfigModule } from './modules/config/config.module';
 import { PlmModule } from './modules/plm/plm.module';
+import { CostingModule } from './modules/costing/costing.module';
+import { StyleExtrasModule } from './modules/style-extras/style-extras.module';
 import { MenuItemsModule } from './modules/menu-items/menu-items.module';
 import { StubsModule } from './modules/stubs/stubs.module';
 import { DocketManagementModule } from './modules/docket-management/docket-management.module';
@@ -87,6 +90,7 @@ import { DocketManagementModule } from './modules/docket-management/docket-manag
     FilesModule,
     CommunicationModule,
     FeedModule,
+    DocumentsModule,
     CollabModule,
     ProjectsModule,
     FitnessModule,
@@ -95,6 +99,8 @@ import { DocketManagementModule } from './modules/docket-management/docket-manag
     UserSettingsModule,
     AppConfigModule,
     PlmModule,
+    CostingModule,
+    StyleExtrasModule,
     DocketManagementModule,
     MenuItemsModule,
     StubsModule,

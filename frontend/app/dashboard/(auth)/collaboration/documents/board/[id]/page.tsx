@@ -47,7 +47,7 @@ export default function BoardEditorPage() {
   const loadDocument = async () => {
     try {
       setLoading(true);
-      const doc = await documentsApi.getDocument(parseInt(documentId));
+      const doc = await documentsApi.getDocument(documentId);
       if (doc) {
         setDocument(doc);
         setDocumentName(doc.name || "");
@@ -93,7 +93,7 @@ export default function BoardEditorPage() {
     try {
       setSaving(true);
       const content = JSON.stringify({ columns });
-      await documentsApi.updateDocument(parseInt(documentId), {
+      await documentsApi.updateDocument(documentId, {
         name: documentName || document.name,
         content,
       });
@@ -216,7 +216,7 @@ export default function BoardEditorPage() {
         // Only save if not currently saving
         if (!saving) {
           const content = JSON.stringify({ columns });
-          documentsApi.updateDocument(parseInt(documentId), {
+          documentsApi.updateDocument(documentId, {
             name: documentName || document?.name,
             content,
           }).catch((error: any) => {
@@ -243,7 +243,7 @@ export default function BoardEditorPage() {
     }
 
     try {
-      await documentsApi.updateDocument(parseInt(documentId), {
+      await documentsApi.updateDocument(documentId, {
         name: documentName.trim(),
       });
       setDocument({ ...document, name: documentName.trim() });

@@ -96,6 +96,12 @@ export class PlmCardsService {
       include: {
         moodBoard: true,
         measurementChart: true,
+        department: true,
+        customer: true,
+        productionMerchandiser: true,
+        productMerchandiser: true,
+        designer: true,
+        washCare: true,
         details: { include: { designDetailType: true } },
         sampleCards: { select: { id: true, sampleNumber: true, title: true, status: true } },
         productCards: { select: { id: true, productNumber: true, title: true, status: true } },
@@ -105,6 +111,14 @@ export class PlmCardsService {
     });
     if (!r) throw new NotFoundException('StyleCard not found');
     return r;
+  }
+
+  async getStyleCardOrders(id: string) {
+    return this.prisma.plmOrder.findMany({
+      where: { styleCardId: id },
+      include: { sampleType: true },
+      orderBy: { createdAt: 'desc' },
+    });
   }
 
   async updateStyleCard(id: string, dto: any) {

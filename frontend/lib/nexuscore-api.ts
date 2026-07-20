@@ -67,6 +67,19 @@ export const customEntityPageApi = {
   deleteCustomEntityPage: (id: string) => api.delete(`/entities/pages/${id}`),
 };
 
+// Entities helpers (custom fields engine, /api/v1/entities)
+const entities = (path: string, q?: Record<string, string>) => {
+  const qs = q ? '?' + new URLSearchParams(q).toString() : '';
+  return `/entities${path}${qs}`;
+};
+
+export const entitiesApi = {
+  getCustomFields: (entity: string) => api.get(entities('/custom-fields', { entity })),
+  getCustomFieldValues: (entity: string, entityId: string) => api.get(entities('/custom-field-values', { entity, entityId })),
+  upsertCustomFieldValues: (entity: string, entityId: string, values: any[]) =>
+    api.put(entities('/custom-field-values'), { entity, entityId, values }),
+};
+
 // PLM helpers
 const plm = (path: string, q?: Record<string, string>) => {
   const qs = q ? '?' + new URLSearchParams(q).toString() : '';
@@ -82,8 +95,27 @@ export const plmApi = {
   processCards: { list: (q?: any) => api.get(plm('/process-cards', q)), create: (d: any) => api.post(plm('/process-cards'), d), get: (id: string) => api.get(plm(`/process-cards/${id}`)), update: (id: string, d: any) => api.put(plm(`/process-cards/${id}`), d), delete: (id: string) => api.delete(plm(`/process-cards/${id}`)) },
   employees: { list: (q?: any) => api.get(plm('/employee-cards', q)), create: (d: any) => api.post(plm('/employee-cards'), d), get: (id: string) => api.get(plm(`/employee-cards/${id}`)), update: (id: string, d: any) => api.put(plm(`/employee-cards/${id}`), d), delete: (id: string) => api.delete(plm(`/employee-cards/${id}`)) },
   resources: { list: (q?: any) => api.get(plm('/resource-cards', q)), create: (d: any) => api.post(plm('/resource-cards'), d), get: (id: string) => api.get(plm(`/resource-cards/${id}`)), update: (id: string, d: any) => api.put(plm(`/resource-cards/${id}`), d), delete: (id: string) => api.delete(plm(`/resource-cards/${id}`)) },
+  activityTypes: { list: (q?: any) => api.get(plm('/activity-type-cards', q)), create: (d: any) => api.post(plm('/activity-type-cards'), d), get: (id: string) => api.get(plm(`/activity-type-cards/${id}`)), update: (id: string, d: any) => api.put(plm(`/activity-type-cards/${id}`), d), delete: (id: string) => api.delete(plm(`/activity-type-cards/${id}`)) },
+  colors: { list: (q?: any) => api.get(plm('/color-cards', q)), create: (d: any) => api.post(plm('/color-cards'), d), get: (id: string) => api.get(plm(`/color-cards/${id}`)), update: (id: string, d: any) => api.put(plm(`/color-cards/${id}`), d), delete: (id: string) => api.delete(plm(`/color-cards/${id}`)) },
+  companyCards: { list: () => api.get(plm('/company-cards')), create: (d: any) => api.post(plm('/company-cards'), d), get: (id: string) => api.get(plm(`/company-cards/${id}`)), update: (id: string, d: any) => api.put(plm(`/company-cards/${id}`), d), delete: (id: string) => api.delete(plm(`/company-cards/${id}`)) },
+  sampleTaskTypes: { list: (q?: any) => api.get(plm('/sample-task-types', q)), create: (d: any) => api.post(plm('/sample-task-types'), d), get: (id: string) => api.get(plm(`/sample-task-types/${id}`)), update: (id: string, d: any) => api.put(plm(`/sample-task-types/${id}`), d), delete: (id: string) => api.delete(plm(`/sample-task-types/${id}`)) },
+  routeCards: {
+    list: (q?: any) => api.get(plm('/route-cards', q)), create: (d: any) => api.post(plm('/route-cards'), d), get: (id: string) => api.get(plm(`/route-cards/${id}`)), update: (id: string, d: any) => api.put(plm(`/route-cards/${id}`), d), delete: (id: string) => api.delete(plm(`/route-cards/${id}`)),
+    addLine: (id: string, d: any) => api.post(plm(`/route-cards/${id}/lines`), d), updateLine: (id: string, lineId: string, d: any) => api.put(plm(`/route-cards/${id}/lines/${lineId}`), d), deleteLine: (id: string, lineId: string) => api.delete(plm(`/route-cards/${id}/lines/${lineId}`)),
+  },
   studyTemplates: { list: (q?: any) => api.get(plm('/study-templates', q)), create: (d: any) => api.post(plm('/study-templates'), d), get: (id: string) => api.get(plm(`/study-templates/${id}`)), update: (id: string, d: any) => api.put(plm(`/study-templates/${id}`), d), delete: (id: string) => api.delete(plm(`/study-templates/${id}`)), upsertLines: (id: string, lines: any[]) => api.put(plm(`/study-templates/${id}/lines`), lines), deleteLine: (id: string, lineId: string) => api.delete(plm(`/study-templates/${id}/lines/${lineId}`)) },
   templates: { list: (q?: any) => api.get(plm('/templates', q)), create: (d: any) => api.post(plm('/templates'), d), get: (id: string) => api.get(plm(`/templates/${id}`)), update: (id: string, d: any) => api.put(plm(`/templates/${id}`), d), delete: (id: string) => api.delete(plm(`/templates/${id}`)), duplicate: (id: string) => api.post(plm(`/templates/${id}/duplicate`)) },
+  costingSheets: {
+    list: (q?: any) => api.get(plm('/costing-sheets', q)),
+    create: (d: any) => api.post(plm('/costing-sheets'), d),
+    get: (id: string) => api.get(plm(`/costing-sheets/${id}`)),
+    update: (id: string, d: any) => api.put(plm(`/costing-sheets/${id}`), d),
+    delete: (id: string) => api.delete(plm(`/costing-sheets/${id}`)),
+    upsertRawMaterialLines: (id: string, lines: any[]) => api.put(plm(`/costing-sheets/${id}/raw-material-lines`), lines),
+    upsertLaborLines: (id: string, lines: any[]) => api.put(plm(`/costing-sheets/${id}/labor-lines`), lines),
+    upsertOtherLines: (id: string, lines: any[]) => api.put(plm(`/costing-sheets/${id}/other-lines`), lines),
+    getProfitBreakdown: (id: string) => api.get(plm(`/costing-sheets/${id}/profit-breakdown`)),
+  },
   // Cards
   moodBoards: { list: (q?: any) => api.get(plm('/mood-boards', q)), create: (d: any) => api.post(plm('/mood-boards'), d), get: (id: string) => api.get(plm(`/mood-boards/${id}`)), update: (id: string, d: any) => api.put(plm(`/mood-boards/${id}`), d), delete: (id: string) => api.delete(plm(`/mood-boards/${id}`)), addImages: (id: string, images: string[]) => api.post(plm(`/mood-boards/${id}/images`), { images }) },
   styleCards: {
@@ -99,7 +131,22 @@ export const plmApi = {
     upsertDetails: (id: string, details: any[]) => api.put(plm(`/style-cards/${id}/details`), details),
     getSamples: (id: string) => api.get(plm(`/style-cards/${id}/samples`)),
     getProducts: (id: string) => api.get(plm(`/style-cards/${id}/products`)),
+    getOrders: (id: string) => api.get(plm(`/style-cards/${id}/orders`)),
+    getCostingSheets: (id: string) => api.get(plm(`/style-cards/${id}/costing-sheets`)),
+    issueCostingSheet: (id: string, d?: any) => api.post(plm(`/style-cards/${id}/issue-costing-sheet`), d || {}),
     duplicate: (id: string) => api.post(plm(`/style-cards/${id}/duplicate`)),
+  },
+  styleBom: {
+    get: (styleCardId: string) => api.get(plm(`/style-cards/${styleCardId}/bom-lines`)),
+    upsertLines: (styleCardId: string, lines: any[]) => api.put(plm(`/style-cards/${styleCardId}/bom-lines`), lines),
+  },
+  styleWashCare: {
+    get: (styleCardId: string) => api.get(plm(`/style-cards/${styleCardId}/wash-care`)),
+    upsert: (styleCardId: string, data: any) => api.put(plm(`/style-cards/${styleCardId}/wash-care`), data),
+  },
+  styleExpenses: {
+    get: (styleCardId: string) => api.get(plm(`/style-cards/${styleCardId}/expense-lines`)),
+    upsertLines: (styleCardId: string, lines: any[]) => api.put(plm(`/style-cards/${styleCardId}/expense-lines`), lines),
   },
   sampleCards: {
     list: (q?: any) => api.get(plm('/sample-cards', q)),

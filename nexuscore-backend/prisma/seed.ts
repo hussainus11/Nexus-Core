@@ -563,6 +563,11 @@ async function main() {
             { title: 'Employee Cards', href: '/dashboard/plm/general-definitions/employee-cards' },
             { title: 'Resource Cards', href: '/dashboard/plm/general-definitions/resource-cards' },
             { title: 'Study Template Cards', href: '/dashboard/plm/general-definitions/study-templates' },
+            { title: 'Activity Type Cards', href: '/dashboard/plm/general-definitions/activity-type-cards' },
+            { title: 'Color Cards', href: '/dashboard/plm/general-definitions/color-cards' },
+            { title: 'Company Cards', href: '/dashboard/plm/general-definitions/company-cards' },
+            { title: 'Sample Task Types', href: '/dashboard/plm/general-definitions/sample-task-types' },
+            { title: 'Route Cards', href: '/dashboard/plm/general-definitions/route-cards' },
           ]},
           { title: 'Utilities', href: '#', icon: 'Workflow', items: [
             { title: 'PLM Orders', href: '/dashboard/plm/orders' },

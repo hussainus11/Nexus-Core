@@ -75,6 +75,44 @@ export class PlmDefinitionsController {
   @Put('study-templates/:id/lines') upsertTemplateLines(@Param('id') id: string, @Body() lines: any[]) { return this.svc.upsertStudyTemplateLines(id, lines); }
   @Delete('study-templates/:id/lines/:lineId') deleteTemplateLine(@Param('id') id: string, @Param('lineId') lineId: string) { return this.svc.deleteStudyTemplateLine(id, lineId); }
 
+  // Activity Type Cards
+  @Get('activity-type-cards') listActivityTypes(@CurrentUser() u: any, @Query('branchId') b?: string) { return this.svc.listActivityTypes(b || u.branchId); }
+  @Post('activity-type-cards') createActivityType(@Body() dto: any) { return this.svc.createActivityType(dto); }
+  @Get('activity-type-cards/:id') getActivityType(@Param('id') id: string) { return this.svc.getActivityType(id); }
+  @Put('activity-type-cards/:id') updateActivityType(@Param('id') id: string, @Body() dto: any) { return this.svc.updateActivityType(id, dto); }
+  @Delete('activity-type-cards/:id') deleteActivityType(@Param('id') id: string) { return this.svc.deleteActivityType(id); }
+
+  // Color Cards
+  @Get('color-cards') listColors(@CurrentUser() u: any, @Query('branchId') b?: string) { return this.svc.listColors(b || u.branchId); }
+  @Post('color-cards') createColor(@Body() dto: any) { return this.svc.createColor(dto); }
+  @Get('color-cards/:id') getColor(@Param('id') id: string) { return this.svc.getColor(id); }
+  @Put('color-cards/:id') updateColor(@Param('id') id: string, @Body() dto: any) { return this.svc.updateColor(id, dto); }
+  @Delete('color-cards/:id') deleteColor(@Param('id') id: string) { return this.svc.deleteColor(id); }
+
+  // Company Cards
+  @Get('company-cards') listCompanyCards() { return this.svc.listCompanyCards(); }
+  @Post('company-cards') createCompanyCard(@Body() dto: any) { return this.svc.createCompanyCard(dto); }
+  @Get('company-cards/:id') getCompanyCard(@Param('id') id: string) { return this.svc.getCompanyCard(id); }
+  @Put('company-cards/:id') updateCompanyCard(@Param('id') id: string, @Body() dto: any) { return this.svc.updateCompanyCard(id, dto); }
+  @Delete('company-cards/:id') deleteCompanyCard(@Param('id') id: string) { return this.svc.deleteCompanyCard(id); }
+
+  // Sample Task Types
+  @Get('sample-task-types') listSampleTaskTypes(@CurrentUser() u: any, @Query('branchId') b?: string) { return this.svc.listSampleTaskTypes(b || u.branchId); }
+  @Post('sample-task-types') createSampleTaskType(@Body() dto: any) { return this.svc.createSampleTaskType(dto); }
+  @Get('sample-task-types/:id') getSampleTaskType(@Param('id') id: string) { return this.svc.getSampleTaskType(id); }
+  @Put('sample-task-types/:id') updateSampleTaskType(@Param('id') id: string, @Body() dto: any) { return this.svc.updateSampleTaskType(id, dto); }
+  @Delete('sample-task-types/:id') deleteSampleTaskType(@Param('id') id: string) { return this.svc.deleteSampleTaskType(id); }
+
+  // Route Cards
+  @Get('route-cards') listRouteCards(@CurrentUser() u: any, @Query('branchId') b?: string) { return this.svc.listRouteCards(b || u.branchId); }
+  @Post('route-cards') createRouteCard(@Body() dto: any) { return this.svc.createRouteCard(dto); }
+  @Get('route-cards/:id') getRouteCard(@Param('id') id: string) { return this.svc.getRouteCard(id); }
+  @Put('route-cards/:id') updateRouteCard(@Param('id') id: string, @Body() dto: any) { return this.svc.updateRouteCard(id, dto); }
+  @Delete('route-cards/:id') deleteRouteCard(@Param('id') id: string) { return this.svc.deleteRouteCard(id); }
+  @Post('route-cards/:id/lines') addRouteCardLine(@Param('id') id: string, @Body() dto: any) { return this.svc.addRouteCardLine(id, dto); }
+  @Put('route-cards/:id/lines/:lineId') updateRouteCardLine(@Param('id') id: string, @Param('lineId') lineId: string, @Body() dto: any) { return this.svc.updateRouteCardLine(lineId, dto); }
+  @Delete('route-cards/:id/lines/:lineId') deleteRouteCardLine(@Param('lineId') lineId: string) { return this.svc.deleteRouteCardLine(lineId); }
+
   // PLM Templates
   @Get('templates') listTemplates(@CurrentUser() u: any, @Query('branchId') b?: string, @Query('type') t?: string) { return this.svc.listTemplates(b || u.branchId, t); }
   @Post('templates') createTemplate(@Body() dto: any, @CurrentUser() u: any) { return this.svc.createTemplate(dto, u.id); }

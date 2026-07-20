@@ -100,7 +100,7 @@ export default function DocumentEditorPage() {
     try {
       setLoading(true);
       setIsContentLoaded(false);
-      const doc = await documentsApi.getDocument(parseInt(documentId));
+      const doc = await documentsApi.getDocument(documentId);
       if (doc) {
         setDocument(doc);
         setDocumentName(doc.name || "");
@@ -133,7 +133,7 @@ export default function DocumentEditorPage() {
 
       // Save content to backend
       const htmlContent = editor?.getHTML() || (typeof content === "string" ? content : "");
-      await documentsApi.updateDocument(parseInt(documentId), {
+      await documentsApi.updateDocument(documentId, {
         name: documentName || document.name,
         content: htmlContent,
       });
@@ -163,7 +163,7 @@ export default function DocumentEditorPage() {
     }
 
     try {
-      await documentsApi.updateDocument(parseInt(documentId), {
+      await documentsApi.updateDocument(documentId, {
         name: documentName.trim(),
       });
       setDocument({ ...document, name: documentName.trim() });

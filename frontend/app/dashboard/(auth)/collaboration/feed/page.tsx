@@ -210,7 +210,7 @@ export default function FeedPage() {
   };
 
   const isLiked = (post: FeedPost) => {
-    return post.likes.some((like) => like.userId === currentUserId);
+    return post.likes?.some((like) => like.userId === currentUserId) ?? false;
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -409,7 +409,7 @@ export default function FeedPage() {
                     <Heart
                       className={`mr-2 h-4 w-4 ${isLiked(post) ? "fill-current" : ""}`}
                     />
-                    {post.likes.length}
+                    {post.likes?.length ?? 0}
                   </Button>
                   <Button
                     variant="ghost"
@@ -417,14 +417,14 @@ export default function FeedPage() {
                     onClick={() => toggleComments(post.id)}
                   >
                     <MessageCircle className="mr-2 h-4 w-4" />
-                    {post.comments.length}
+                    {post.comments?.length ?? 0}
                   </Button>
                 </div>
 
                 {/* Comments Section */}
                 {expandedComments.has(post.id) && (
                   <div className="mt-4 space-y-3 border-t pt-3">
-                    {post.comments.map((comment) => (
+                    {(post.comments ?? []).map((comment) => (
                       <div key={comment.id} className="flex items-start gap-2">
                         <Avatar className="h-8 w-8">
                           <AvatarImage

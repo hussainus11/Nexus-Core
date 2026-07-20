@@ -8,9 +8,10 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "bundui-images.netlify.app" }
     ]
   },
-  // Turbopack: pin root and alias CSS packages to this package's node_modules.
+  // Turbopack: pin root to the monorepo root (where hoisted deps like `next` live)
+  // and alias CSS packages to this package's node_modules.
   turbopack: {
-    root: __dirname,
+    root: path.resolve(__dirname, ".."),
     resolveAlias: {
       tailwindcss: path.resolve(__dirname, "node_modules/tailwindcss"),
       "tailwindcss-animate": path.resolve(__dirname, "node_modules/tailwindcss-animate"),

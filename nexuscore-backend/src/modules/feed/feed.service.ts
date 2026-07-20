@@ -39,7 +39,14 @@ export class FeedService {
   async createPost(dto: any, userId: string, companyId: string, branchId?: string) {
     return this.prisma.feedPost.create({
       data: { ...dto, userId, companyId, ...(branchId ? { branchId } : {}) },
-      include: { user: { select: { id: true, name: true, image: true } } },
+      include: {
+        user: { select: { id: true, name: true, image: true } },
+        likes: true,
+        comments: {
+          include: { user: { select: { id: true, name: true, image: true } } },
+          orderBy: { createdAt: 'asc' },
+        },
+      },
     });
   }
 

@@ -475,6 +475,30 @@ export class EntitiesService {
     return this.prisma.customField.delete({ where: { id } });
   }
 
+  // ── Custom Field Values ─────────────────────────────────────────────────────
+
+  async getCustomFieldValues(entity: string, entityId: string) {
+    return this.prisma.customFieldValue.findMany({
+      where: { entity, entityId },
+      include: { customField: true },
+    });
+  }
+
+  async upsertCustomFieldValues(entity: string, entityId: string, values: any[]) {
+    await this.prisma.customFieldValue.deleteMany({ where: { entity, entityId } });
+    if (values?.length) {
+      await this.prisma.customFieldValue.createMany({
+        data: values
+          .filter((v) => v.customFieldId)
+          .map((v) => ({ customFieldId: v.customFieldId, entity, entityId, value: v.value ?? undefined })),
+      });
+    }
+    return this.prisma.customFieldValue.findMany({
+      where: { entity, entityId },
+      include: { customField: true },
+    });
+  }
+
   // ── Entity Schema (default fields + custom fields) ─────────────────────────
 
   async getEntitySchema(entityName: string, companyId?: string, branchId?: string) {

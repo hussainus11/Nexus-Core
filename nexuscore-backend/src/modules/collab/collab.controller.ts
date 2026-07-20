@@ -4,7 +4,7 @@ import { CollabService } from './collab.service';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @ApiTags('Collab')
-@Controller('collab')
+@Controller('collabs')
 export class CollabController {
   constructor(private readonly svc: CollabService) {}
 

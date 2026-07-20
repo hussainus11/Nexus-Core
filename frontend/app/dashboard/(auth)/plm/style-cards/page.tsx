@@ -45,8 +45,9 @@ export default function StyleCardsPage() {
       if (search) q.search = search;
       if (status) q.status = status;
       const r: any = await plmApi.styleCards.list(q);
-      setData(r?.data ?? []);
-      setMeta(r?.meta ?? { total: 0, page: 1, pages: 1 });
+      const list = Array.isArray(r) ? r : (r?.data ?? []);
+      setData(list);
+      setMeta(Array.isArray(r) ? { total: list.length, page: 1, pages: 1 } : (r?.meta ?? { total: list.length, page: 1, pages: 1 }));
     } finally { setLoading(false); }
   }, [search, status]);
 

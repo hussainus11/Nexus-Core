@@ -28,6 +28,7 @@ export class PlmCardsController {
   @Put('style-cards/:id/details') upsertStyleCardDetails(@Param('id') id: string, @Body() details: any[], @CurrentUser() u: any) { return this.svc.upsertStyleCardDetails(id, details, u.id); }
   @Get('style-cards/:id/samples') getStyleCardSamples(@Param('id') id: string) { return this.svc['prisma'].sampleCard.findMany({ where: { styleCardId: id }, include: { sampleType: true } }); }
   @Get('style-cards/:id/products') getStyleCardProducts(@Param('id') id: string) { return this.svc['prisma'].productCard.findMany({ where: { styleCardId: id } }); }
+  @Get('style-cards/:id/orders') getStyleCardOrders(@Param('id') id: string) { return this.svc.getStyleCardOrders(id); }
   @Post('style-cards/:id/duplicate') duplicateStyleCard(@Param('id') id: string, @CurrentUser() u: any) { return this.svc.duplicateStyleCard(id, u.id); }
 
   // Sample Cards

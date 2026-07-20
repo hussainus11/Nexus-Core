@@ -32,21 +32,21 @@ import { useRouter } from "next/navigation";
 type ViewMode = "list" | "grid" | "tile";
 
 interface Board {
-  id: number;
+  id: string;
   name: string;
   type: "BOARD";
   filePath?: string;
   fileSize?: number;
   mimeType?: string;
-  createdById: number;
-  companyId?: number | null;
-  branchId?: number | null;
+  createdById: string;
+  companyId?: string | null;
+  branchId?: string | null;
   isShared: boolean;
   isPublished: boolean;
   createdAt: string;
   updatedAt: string;
   createdBy: {
-    id: number;
+    id: string;
     name: string;
     email: string;
     image?: string;
@@ -60,7 +60,7 @@ export default function BoardsPage() {
   const [boards, setBoards] = useState<Board[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
-  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+  const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
 
   // Load boards on mount
@@ -129,7 +129,7 @@ export default function BoardsPage() {
     }
   };
 
-  const toggleRowSelection = (boardId: number) => {
+  const toggleRowSelection = (boardId: string) => {
     setSelectedRows((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(boardId)) {

@@ -33,21 +33,21 @@ import { useRouter } from "next/navigation";
 type ViewMode = "list" | "grid" | "tile";
 
 interface Document {
-  id: number;
+  id: string;
   name: string;
   type: "DOCUMENT" | "SPREADSHEET" | "PRESENTATION" | "BOARD";
   filePath?: string;
   fileSize?: number;
   mimeType?: string;
-  createdById: number;
-  companyId?: number | null;
-  branchId?: number | null;
+  createdById: string;
+  companyId?: string | null;
+  branchId?: string | null;
   isShared: boolean;
   isPublished: boolean;
   createdAt: string;
   updatedAt: string;
   createdBy: {
-    id: number;
+    id: string;
     name: string;
     email: string;
     image?: string;
@@ -63,7 +63,7 @@ export default function OnlineDocumentsPage() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState<string | null>(null);
-  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+  const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [columnVisibility, setColumnVisibility] = useState<Record<ColumnKey, boolean>>({
     name: true,
     type: true,
@@ -254,7 +254,7 @@ export default function OnlineDocumentsPage() {
     }
   };
 
-  const toggleRowSelection = (docId: number) => {
+  const toggleRowSelection = (docId: string) => {
     setSelectedRows((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(docId)) {

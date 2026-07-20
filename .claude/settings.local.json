@@ -5,7 +5,9 @@
       "Bash(npx prisma *)",
       "Bash(npx tsc *)",
       "Bash(node_modules/.bin/tsc --noEmit)",
-      "Bash(mkdir -p \"d:/NexusCore/frontend/app/\\(public\\)/shared/[token]\" 2>/dev/null; echo \"done\")"
+      "Bash(mkdir -p \"d:/NexusCore/frontend/app/\\(public\\)/shared/[token]\" 2>/dev/null; echo \"done\")",
+      "Skill(run)",
+      "Skill(run:*)"
     ],
     "additionalDirectories": [
       "d:\\NexusCore\\frontend\\app\\(public)\\shared"

@@ -2735,7 +2735,7 @@ export const documentsApi = {
   },
 
   // Get a single document
-  getDocument: (id: number) =>
+  getDocument: (id: string) =>
     apiRequest(`/documents/${id}`, {
       headers: getAuthHeaders(),
     }),
@@ -2773,7 +2773,7 @@ export const documentsApi = {
     }),
 
   // Update a document
-  updateDocument: (id: number, data: { name?: string; isShared?: boolean; isPublished?: boolean; content?: string }) =>
+  updateDocument: (id: string, data: { name?: string; isShared?: boolean; isPublished?: boolean; content?: string }) =>
     apiRequest(`/documents/${id}`, {
       method: 'PUT',
       headers: getAuthHeaders(),
@@ -2781,15 +2781,14 @@ export const documentsApi = {
     }),
 
   // Delete a document
-  deleteDocument: (id: number) =>
+  deleteDocument: (id: string) =>
     apiRequest(`/documents/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
     }),
 
   // Download a document
-  downloadDocument: (id: number) => {
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+  downloadDocument: (id: string) => {
     return `${API_BASE_URL}/documents/${id}/download`;
   },
 };

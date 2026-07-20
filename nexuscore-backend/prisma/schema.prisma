@@ -496,7 +496,7 @@ model Branch {
   createdAt                DateTime @default(now())
   updatedAt                DateTime @updatedAt
 
-  company              Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company              Company                 @relation(fields: [companyId], references: [id], onDelete: Cascade)
   users                User[]
   cuttingOrders        CuttingOrder[]
   leadStages           LeadStage[]
@@ -595,58 +595,58 @@ model User {
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
 
-  company                  Company                  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  branch                   Branch?                  @relation(fields: [branchId], references: [id])
-  userRoles                UserRole[]
-  bpmTasks                 BpmTask[]
-  auditLogs                AuditLog[]
-  notifications            Notification[]
-  cuttingBatches           CuttingBatch[]
-  notes                    Note[]
-  noteLabels               NoteLabel[]
-  todos                    Todo[]
-  settings                 UserSettings?
-  passwordResetTokens      PasswordResetToken[]
-  emailSignatures          EmailSignature[]
-  feedPosts                FeedPost[]
-  feedLikes                FeedLike[]
-  feedComments             FeedComment[]
-  createdCollabs           Collab[]                 @relation("CreatedCollabs")
-  collabMembers            CollabMember[]
-  collabInvitations        CollabInvitation[]       @relation("InvitedBy")
-  createdWorkGroups        WorkGroup[]              @relation("CreatedWorkGroups")
-  workGroupMembers         WorkGroupMember[]
-  createdRichDocuments     RichDocument[]
-  calendarEvents           CalendarEvent[]
-  managedProjects          Project[]                @relation("ManagedProjects")
-  projectMembers           ProjectMember[]
-  reminders                Reminder[]
-  fitnessActivities        FitnessActivity[]
-  nutritionEntries         NutritionEntry[]
-  sleepRecords             SleepRecord[]
-  folders                  Folder[]
-  mediaFiles               MediaFile[]
-  connectionsAsUser1       UserConnection[]         @relation("User1Connections")
-  connectionsAsUser2       UserConnection[]         @relation("User2Connections")
-  createdProducts          Product[]                @relation("CreatedProducts")
-  updatedProducts          Product[]                @relation("UpdatedProducts")
-  createdReportTemplates   ReportTemplate[]         @relation("CreatedReportTemplates")
-  updatedReportTemplates   ReportTemplate[]         @relation("UpdatedReportTemplates")
-  createdPdfReports        PdfReport[]              @relation("CreatedPdfReports")
-  updatedPdfReports        PdfReport[]              @relation("UpdatedPdfReports")
-  createdDealDashboards    DealDashboard[]          @relation("CreatedDealDashboards")
-  dealDashboardUserShares  DealDashboardUserShare[]
-  dealDashboardPrefs       DealDashboardUserPref[]
-  chatParticipants         ChatParticipant[]
-  chatMessages             ChatMessage[]            @relation("SentMessages")
-  formSectionPerms         FormSectionPermission[]
-  formFieldPerms           FormFieldPermission[]
-  mails                    Mail[]
-  chatAccessGranted        ChatAccess[]             @relation("ChatAccessGranted")
-  chatAccessReceived       ChatAccess[]             @relation("ChatAccessReceived")
-  loginHistory             LoginHistory[]
-  exceptionLogs            ExceptionLog[]
-  processedReturns         OrderReturn[]            @relation("ProcessedReturns")
+  company                 Company                  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch                  Branch?                  @relation(fields: [branchId], references: [id])
+  userRoles               UserRole[]
+  bpmTasks                BpmTask[]
+  auditLogs               AuditLog[]
+  notifications           Notification[]
+  cuttingBatches          CuttingBatch[]
+  notes                   Note[]
+  noteLabels              NoteLabel[]
+  todos                   Todo[]
+  settings                UserSettings?
+  passwordResetTokens     PasswordResetToken[]
+  emailSignatures         EmailSignature[]
+  feedPosts               FeedPost[]
+  feedLikes               FeedLike[]
+  feedComments            FeedComment[]
+  createdCollabs          Collab[]                 @relation("CreatedCollabs")
+  collabMembers           CollabMember[]
+  collabInvitations       CollabInvitation[]       @relation("InvitedBy")
+  createdWorkGroups       WorkGroup[]              @relation("CreatedWorkGroups")
+  workGroupMembers        WorkGroupMember[]
+  createdRichDocuments    RichDocument[]
+  calendarEvents          CalendarEvent[]
+  managedProjects         Project[]                @relation("ManagedProjects")
+  projectMembers          ProjectMember[]
+  reminders               Reminder[]
+  fitnessActivities       FitnessActivity[]
+  nutritionEntries        NutritionEntry[]
+  sleepRecords            SleepRecord[]
+  folders                 Folder[]
+  mediaFiles              MediaFile[]
+  connectionsAsUser1      UserConnection[]         @relation("User1Connections")
+  connectionsAsUser2      UserConnection[]         @relation("User2Connections")
+  createdProducts         Product[]                @relation("CreatedProducts")
+  updatedProducts         Product[]                @relation("UpdatedProducts")
+  createdReportTemplates  ReportTemplate[]         @relation("CreatedReportTemplates")
+  updatedReportTemplates  ReportTemplate[]         @relation("UpdatedReportTemplates")
+  createdPdfReports       PdfReport[]              @relation("CreatedPdfReports")
+  updatedPdfReports       PdfReport[]              @relation("UpdatedPdfReports")
+  createdDealDashboards   DealDashboard[]          @relation("CreatedDealDashboards")
+  dealDashboardUserShares DealDashboardUserShare[]
+  dealDashboardPrefs      DealDashboardUserPref[]
+  chatParticipants        ChatParticipant[]
+  chatMessages            ChatMessage[]            @relation("SentMessages")
+  formSectionPerms        FormSectionPermission[]
+  formFieldPerms          FormFieldPermission[]
+  mails                   Mail[]
+  chatAccessGranted       ChatAccess[]             @relation("ChatAccessGranted")
+  chatAccessReceived      ChatAccess[]             @relation("ChatAccessReceived")
+  loginHistory            LoginHistory[]
+  exceptionLogs           ExceptionLog[]
+  processedReturns        OrderReturn[]            @relation("ProcessedReturns")
 }
 
 model Role {
@@ -1039,21 +1039,21 @@ model PipelineConnection {
 // ── CRM ROLES & PERMISSIONS ───────────────────────────────────────────────────
 
 model CrmRole {
-  id          String   @id @default(uuid())
-  name        String
-  description String?
-  permissions Json?
-  isSystem    Boolean  @default(false)
-  isDefault   Boolean  @default(false)
-  isActive    Boolean  @default(true)
-  companyId   String?
-  branchId    String?
-  company     Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  branch      Branch?  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  id                  String                   @id @default(uuid())
+  name                String
+  description         String?
+  permissions         Json?
+  isSystem            Boolean                  @default(false)
+  isDefault           Boolean                  @default(false)
+  isActive            Boolean                  @default(true)
+  companyId           String?
+  branchId            String?
+  company             Company?                 @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch              Branch?                  @relation(fields: [branchId], references: [id], onDelete: Cascade)
   permissionSettings  PermissionSetting[]
   dashboardRoleShares DealDashboardRoleShare[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
 
   @@index([companyId])
   @@index([branchId])
@@ -1113,9 +1113,26 @@ model CustomField {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
+  values CustomFieldValue[]
+
   @@index([companyId])
   @@index([branchId])
   @@index([entity])
+}
+
+model CustomFieldValue {
+  id            String   @id @default(uuid())
+  customFieldId String
+  entity        String
+  entityId      String
+  value         Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  customField CustomField @relation(fields: [customFieldId], references: [id], onDelete: Cascade)
+
+  @@index([entity, entityId])
+  @@index([customFieldId])
 }
 
 model AnalyticalReport {
@@ -1159,31 +1176,31 @@ model AutoNumbering {
 }
 
 model PermissionSetting {
-  id           String              @id @default(uuid())
-  crmRoleId    String
-  crmRole      CrmRole             @relation(fields: [crmRoleId], references: [id], onDelete: Cascade)
-  module       CrmModule?
-  resourceType ResourceType?       @default(MENU)
-  resourcePath String?
-  resourceName String?
-  parentId     String?
-  parent       PermissionSetting?  @relation("PermHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
-  children     PermissionSetting[] @relation("PermHierarchy")
-  canRead      Boolean             @default(false)
-  canWrite     Boolean             @default(false)
-  canEdit      Boolean             @default(false)
-  canDelete    Boolean             @default(false)
-  canManage    Boolean             @default(false)
-  canExport    Boolean             @default(false)
-  canImport    Boolean             @default(false)
+  id                 String              @id @default(uuid())
+  crmRoleId          String
+  crmRole            CrmRole             @relation(fields: [crmRoleId], references: [id], onDelete: Cascade)
+  module             CrmModule?
+  resourceType       ResourceType?       @default(MENU)
+  resourcePath       String?
+  resourceName       String?
+  parentId           String?
+  parent             PermissionSetting?  @relation("PermHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children           PermissionSetting[] @relation("PermHierarchy")
+  canRead            Boolean             @default(false)
+  canWrite           Boolean             @default(false)
+  canEdit            Boolean             @default(false)
+  canDelete          Boolean             @default(false)
+  canManage          Boolean             @default(false)
+  canExport          Boolean             @default(false)
+  canImport          Boolean             @default(false)
   fieldPermissions   Json?
   sectionPermissions Json?
-  companyId    String?
-  branchId     String?
-  company      Company?            @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  branch       Branch?             @relation(fields: [branchId], references: [id], onDelete: Cascade)
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
+  companyId          String?
+  branchId           String?
+  company            Company?            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch             Branch?             @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
 
   @@unique([crmRoleId, resourcePath, companyId, branchId])
   @@index([crmRoleId])
@@ -1197,22 +1214,22 @@ model PermissionSetting {
 // ── BUSINESS PROCESSES & EMAIL ─────────────────────────────────────────────────
 
 model BusinessProcess {
-  id          String         @id @default(uuid())
-  name        String
-  description String?
-  trigger     ProcessTrigger @default(MANUAL)
-  status      ProcessStatus  @default(DRAFT)
-  isActive    Boolean        @default(false)
-  steps       Json?
-  conditions  Json?
-  settings    Json?
-  companyId   String?
-  branchId    String?
-  company     Company?       @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  branch      Branch?        @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  id            String         @id @default(uuid())
+  name          String
+  description   String?
+  trigger       ProcessTrigger @default(MANUAL)
+  status        ProcessStatus  @default(DRAFT)
+  isActive      Boolean        @default(false)
+  steps         Json?
+  conditions    Json?
+  settings      Json?
+  companyId     String?
+  branchId      String?
+  company       Company?       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch        Branch?        @relation(fields: [branchId], references: [id], onDelete: Cascade)
   formTemplates FormTemplate[]
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   @@index([companyId])
   @@index([branchId])
@@ -1434,25 +1451,25 @@ model FormFieldPermission {
 }
 
 model FormTemplate {
-  id               String           @id @default(uuid())
+  id               String            @id @default(uuid())
   name             String
   description      String?
   entityType       FormEntityType
   customEntityName String?
   formFields       Json
   workflowId       String?
-  workflow         BusinessProcess? @relation(fields: [workflowId], references: [id], onDelete: SetNull)
+  workflow         BusinessProcess?  @relation(fields: [workflowId], references: [id], onDelete: SetNull)
   path             String?
-  isActive         Boolean          @default(true)
+  isActive         Boolean           @default(true)
   settings         Json?
   companyId        String?
   branchId         String?
-  company          Company?         @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  branch           Branch?          @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  company          Company?          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch           Branch?           @relation(fields: [branchId], references: [id], onDelete: Cascade)
   entityData       EntityData[]
   customEntityPage CustomEntityPage?
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
 
   @@unique([name, companyId, branchId])
   @@index([companyId])
@@ -1909,19 +1926,19 @@ model CollabInvitation {
 }
 
 model WorkGroup {
-  id          String              @id @default(uuid())
+  id          String            @id @default(uuid())
   name        String
-  description String?             @db.Text
-  status      WorkGroupStatus     @default(ACTIVE)
+  description String?           @db.Text
+  status      WorkGroupStatus   @default(ACTIVE)
   createdById String
-  createdBy   User                @relation("CreatedWorkGroups", fields: [createdById], references: [id], onDelete: Cascade)
+  createdBy   User              @relation("CreatedWorkGroups", fields: [createdById], references: [id], onDelete: Cascade)
   companyId   String?
   branchId    String?
-  company     Company?            @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  branch      Branch?             @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  company     Company?          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch      Branch?           @relation(fields: [branchId], references: [id], onDelete: Cascade)
   members     WorkGroupMember[]
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 
   @@index([createdById])
   @@index([companyId])
@@ -2146,41 +2163,41 @@ model ProductSubCategory {
 }
 
 model Product {
-  id              String      @id @default(uuid())
+  id              String            @id @default(uuid())
   name            String
-  description     String?     @db.Text
+  description     String?           @db.Text
   image           String?
-  sku             String?     @unique
+  sku             String?           @unique
   barcode         String?
   price           Float
   discountedPrice Float?
   cost            Float?
-  chargeTax       Boolean     @default(false)
+  chargeTax       Boolean           @default(false)
   taxPercentage   Float?
   discountType    String?
   discountValue   Float?
-  quantity        Int         @default(0)
+  quantity        Int               @default(0)
   category        String?
   sub_category    String?
   brand           String?
-  productType     ProductType @default(SINGLE)
+  productType     ProductType       @default(SINGLE)
   variants        Json?
   variantGroups   Json?
   compositeItems  Json?
   customFields    Json?
-  status          String      @default("active")
+  status          String            @default("active")
   companyId       String?
   branchId        String?
   createdById     String?
   updatedById     String?
-  company         Company?    @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  branch          Branch?     @relation(fields: [branchId], references: [id], onDelete: Cascade)
-  createdBy       User?       @relation("CreatedProducts", fields: [createdById], references: [id], onDelete: SetNull)
-  updatedBy       User?       @relation("UpdatedProducts", fields: [updatedById], references: [id], onDelete: SetNull)
+  company         Company?          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch          Branch?           @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdBy       User?             @relation("CreatedProducts", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy       User?             @relation("UpdatedProducts", fields: [updatedById], references: [id], onDelete: SetNull)
   orderItems      OrderItem[]
   returnedItems   OrderReturnItem[]
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 
   @@index([companyId])
   @@index([branchId])
@@ -2191,7 +2208,7 @@ model Product {
 // ── CUSTOMERS & ORDERS ────────────────────────────────────────────────────────
 
 model Customer {
-  id         String    @id @default(uuid())
+  id         String            @id @default(uuid())
   name       String
   email      String?
   phone      String?
@@ -2202,13 +2219,14 @@ model Customer {
   postalCode String?
   companyId  String?
   branchId   String?
-  company    Company?  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  branch     Branch?   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  company    Company?          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch     Branch?           @relation(fields: [branchId], references: [id], onDelete: Cascade)
   orders     Order[]
   payments   CustomerPayment[]
   returns    OrderReturn[]
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  styleCards StyleCard[]
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
 
   @@index([companyId])
   @@index([branchId])
@@ -2216,34 +2234,34 @@ model Customer {
 }
 
 model Order {
-  id              String      @id @default(uuid())
-  orderNumber     String      @unique
+  id              String            @id @default(uuid())
+  orderNumber     String            @unique
   customerId      String
-  customer        Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  status          OrderStatus @default(PENDING)
-  type            OrderType   @default(SALE)
+  customer        Customer          @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  status          OrderStatus       @default(PENDING)
+  type            OrderType         @default(SALE)
   totalAmount     Float
   subtotal        Float
-  tax             Float?      @default(0)
-  discount        Float?      @default(0)
-  shippingCost    Float?      @default(0)
-  currency        String?     @default("USD")
+  tax             Float?            @default(0)
+  discount        Float?            @default(0)
+  shippingCost    Float?            @default(0)
+  currency        String?           @default("USD")
   paymentMethod   String?
   paymentStatus   String?
   shippingAddress String?
-  notes           String?     @db.Text
-  orderDate       DateTime    @default(now())
+  notes           String?           @db.Text
+  orderDate       DateTime          @default(now())
   shippedDate     DateTime?
   deliveredDate   DateTime?
   companyId       String?
   branchId        String?
-  company         Company?    @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  branch          Branch?     @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  company         Company?          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch          Branch?           @relation(fields: [branchId], references: [id], onDelete: Cascade)
   items           OrderItem[]
   payments        CustomerPayment[]
   returns         OrderReturn[]
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 
   @@index([companyId])
   @@index([branchId])
@@ -2253,19 +2271,19 @@ model Order {
 }
 
 model OrderItem {
-  id               String          @id @default(uuid())
+  id               String            @id @default(uuid())
   orderId          String
-  order            Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order            Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productId        String
-  product          Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product          Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
   quantity         Int
-  returnedQuantity Int             @default(0)
+  returnedQuantity Int               @default(0)
   price            Float
-  discount         Float?          @default(0)
+  discount         Float?            @default(0)
   subtotal         Float
   returns          OrderReturnItem[]
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
 
   @@index([orderId])
   @@index([productId])
@@ -2345,31 +2363,31 @@ model SupplierPayment {
 }
 
 model OrderReturn {
-  id               String        @id @default(uuid())
-  returnNumber     String        @unique
+  id               String            @id @default(uuid())
+  returnNumber     String            @unique
   orderId          String
-  order            Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order            Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
   customerId       String
-  customer         Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  status           ReturnStatus  @default(PENDING)
+  customer         Customer          @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  status           ReturnStatus      @default(PENDING)
   returnReason     ReturnReason
-  returnReasonNote String?       @db.Text
-  returnDate       DateTime      @default(now())
+  returnReasonNote String?           @db.Text
+  returnDate       DateTime          @default(now())
   processedDate    DateTime?
-  refundAmount     Float         @default(0)
+  refundAmount     Float             @default(0)
   refundMethod     RefundMethod?
-  refundStatus     PaymentStatus? @default(PENDING)
+  refundStatus     PaymentStatus?    @default(PENDING)
   refundReference  String?
   items            OrderReturnItem[]
-  notes            String?       @db.Text
+  notes            String?           @db.Text
   processedById    String?
-  processedBy      User?         @relation("ProcessedReturns", fields: [processedById], references: [id], onDelete: SetNull)
+  processedBy      User?             @relation("ProcessedReturns", fields: [processedById], references: [id], onDelete: SetNull)
   companyId        String?
   branchId         String?
-  company          Company?      @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  branch           Branch?       @relation(fields: [branchId], references: [id], onDelete: Cascade)
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+  company          Company?          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch           Branch?           @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
 
   @@index([companyId])
   @@index([branchId])
@@ -2380,21 +2398,21 @@ model OrderReturn {
 }
 
 model OrderReturnItem {
-  id           String       @id @default(uuid())
+  id           String        @id @default(uuid())
   returnId     String
-  return       OrderReturn  @relation(fields: [returnId], references: [id], onDelete: Cascade)
+  return       OrderReturn   @relation(fields: [returnId], references: [id], onDelete: Cascade)
   orderItemId  String
-  orderItem    OrderItem    @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  orderItem    OrderItem     @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
   productId    String
-  product      Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product      Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
   quantity     Int
   price        Float
   refundAmount Float
   reason       ReturnReason?
-  reasonNote   String?      @db.Text
+  reasonNote   String?       @db.Text
   condition    String?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   @@index([returnId])
   @@index([orderItemId])
@@ -2458,30 +2476,30 @@ model MediaFile {
 // ── PROJECTS ──────────────────────────────────────────────────────────────────
 
 model Project {
-  id            String        @id @default(uuid())
+  id            String          @id @default(uuid())
   title         String
   subtitle      String?
-  description   String?       @db.Text
-  status        ProjectStatus @default(PENDING)
-  progress      Int           @default(0)
+  description   String?         @db.Text
+  status        ProjectStatus   @default(PENDING)
+  progress      Int             @default(0)
   startDate     DateTime?
   endDate       DateTime?
   deadline      DateTime?
   budget        Float?
-  spent         Float?        @default(0)
+  spent         Float?          @default(0)
   clientName    String?
   clientAvatar  String?
   progressColor String?
   badgeColor    String?
   managerId     String?
-  manager       User?         @relation("ManagedProjects", fields: [managerId], references: [id], onDelete: SetNull)
+  manager       User?           @relation("ManagedProjects", fields: [managerId], references: [id], onDelete: SetNull)
   companyId     String?
   branchId      String?
-  company       Company?      @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  branch        Branch?       @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  company       Company?        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch        Branch?         @relation(fields: [branchId], references: [id], onDelete: Cascade)
   members       ProjectMember[]
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 
   @@index([companyId])
   @@index([branchId])
@@ -3105,6 +3123,8 @@ model StyleSampleType {
   isActive    Boolean @default(true)
 
   sampleCards SampleCard[]
+  plmOrders   PlmOrder[]
+  activityTypes ActivityTypeCard[]
 }
 
 model DesignDetailType {
@@ -3168,6 +3188,8 @@ model DepartmentCard {
 
   employees    EmployeeCard[]
   processCards ProcessCard[]
+  styleCards   StyleCard[]
+  activityTypes ActivityTypeCard[]
 }
 
 model ProcessCard {
@@ -3183,6 +3205,8 @@ model ProcessCard {
   department    DepartmentCard      @relation(fields: [departmentId], references: [id])
   studyLines    StudyTemplateLine[]
   criticalPaths CriticalPathTask[]
+  activityTypes ActivityTypeCard[]
+  routeLines    RouteCardLine[]
 }
 
 model EmployeeCard {
@@ -3201,6 +3225,10 @@ model EmployeeCard {
   createdAt      DateTime  @default(now())
 
   department DepartmentCard @relation(fields: [departmentId], references: [id])
+
+  styleCardsAsProductionMerchandiser StyleCard[] @relation("StyleProductionMerchandiser")
+  styleCardsAsProductMerchandiser    StyleCard[] @relation("StyleProductMerchandiser")
+  styleCardsAsDesigner               StyleCard[] @relation("StyleDesigner")
 }
 
 model ResourceCard {
@@ -3217,6 +3245,129 @@ model ResourceCard {
   branchId     String
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
+
+  activityTypes ActivityTypeCard[]
+}
+
+model ActivityTypeCard {
+  id                                   String   @id @default(uuid())
+  code                                 String   @unique
+  name                                 String
+  explanation                          String?
+  accessCode                          String?
+  specialCode                         String?
+  connectedActivityTypeId              String?
+  departmentId                         String?
+  resourceId                           String?
+  processId                            String?
+  productionVariant                    String?
+  sampleTypeId                         String?
+  durationDay                          Int?
+  nextTransactionStartDuration         Int?
+  nextTransactionStartDurationType     String?
+  previousTransactionStartDuration     Int?
+  previousTransactionStartDurationType String?
+  transactionType                      String?
+  sampleTaskRequestResourceS           Boolean  @default(true)
+  preProduction                        Boolean  @default(false)
+  postProduction                       Boolean  @default(false)
+  resourceFromUserCard                 Boolean  @default(false)
+  generateResourceAssignmentsAutomatically Boolean @default(false)
+  useForPlmTaskRequest                 Boolean  @default(true)
+  inUse                                Boolean  @default(true)
+  branchId                             String
+  createdAt                            DateTime @default(now())
+
+  connectedActivityType ActivityTypeCard?  @relation("ActivityTypeSelf", fields: [connectedActivityTypeId], references: [id])
+  relatedActivityTypes  ActivityTypeCard[] @relation("ActivityTypeSelf")
+  department            DepartmentCard?    @relation(fields: [departmentId], references: [id])
+  resource              ResourceCard?      @relation(fields: [resourceId], references: [id])
+  process               ProcessCard?       @relation(fields: [processId], references: [id])
+  sampleType            StyleSampleType?   @relation(fields: [sampleTypeId], references: [id])
+}
+
+model ColorCard {
+  id                       String   @id @default(uuid())
+  code                     String   @unique
+  name                     String
+  explanation              String?
+  accessCode               String?
+  color                    String
+  doNotUseForVariantMatrix Boolean  @default(false)
+  inUse                    Boolean  @default(true)
+  branchId                 String
+  createdAt                DateTime @default(now())
+}
+
+model CompanyCard {
+  id                   String    @id @default(uuid())
+  code                 String    @unique
+  name                 String
+  password             String?
+  inUse                Boolean   @default(true)
+  startOfPeriod        DateTime?
+  endOfPeriod          DateTime?
+  taxOffice            String?
+  taxNo                String?
+  idNo                 String?
+  mersisNo             String?
+  tradeNo              String?
+  companyType          String?
+  activityType         String?
+  naceCode             String?
+  directedCompanies    String?
+  forex                String?
+  forexCalculationType String?   @default("Use parameter")
+  useWorkplace         Boolean   @default(false)
+  eGovernmentInfo      Json?
+  address              Json?
+  workDays             Json?
+  smSmmmYmmInfo        Json?
+  certificates         Json?
+  imageLogo            String?
+  branchId             String?
+  createdAt            DateTime  @default(now())
+}
+
+model SampleTaskType {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  name        String
+  explanation String?
+  sequence    Int      @default(0)
+  isActive    Boolean  @default(true)
+  branchId    String
+  createdAt   DateTime @default(now())
+}
+
+model RouteCard {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  name        String
+  accessCode  String?
+  specialCode String?
+  serviceCode String?
+  inUse       Boolean  @default(true)
+  branchId    String
+  createdAt   DateTime @default(now())
+
+  lines RouteCardLine[]
+}
+
+model RouteCardLine {
+  id               String   @id @default(uuid())
+  routeCardId      String
+  processId        String
+  explanation      String?
+  unitPrice        Decimal? @db.Decimal(10, 2)
+  forex            String?
+  forexRate        Decimal? @db.Decimal(10, 4)
+  forexUnitPrice   Decimal? @db.Decimal(10, 2)
+  isActive         Boolean  @default(true)
+  sequence         Int      @default(0)
+
+  routeCard RouteCard   @relation(fields: [routeCardId], references: [id], onDelete: Cascade)
+  process   ProcessCard @relation(fields: [processId], references: [id])
 }
 
 model StudyTemplateCard {
@@ -3247,6 +3398,106 @@ model StudyTemplateLine {
 
   studyTemplate StudyTemplateCard @relation(fields: [studyTemplateId], references: [id], onDelete: Cascade)
   processCard   ProcessCard       @relation(fields: [processCardId], references: [id])
+}
+
+// ── PLM — Costing ─────────────────────────────────────────────────────────────
+
+model CostingSheet {
+  id                    String    @id @default(uuid())
+  costingNo             String    @unique
+  costingDate           DateTime?
+  styleCardId           String?
+  styleId               String?
+  styleCode             String?
+  styleName             String?
+  accountCode           String?
+  accountName           String?
+  category              String?
+  brand                 String?
+  pkrRate               Decimal   @default(1) @db.Decimal(14, 4)
+  foreignCurrency       String?
+  foreignRate           Decimal   @default(0) @db.Decimal(14, 4)
+  secondForeignCurrency String?
+  secondForeignRate     Decimal   @default(0) @db.Decimal(14, 4)
+  quotedPriceForex      String?
+  quotedPrice           Decimal   @default(0) @db.Decimal(14, 4)
+  orderQuantity         Decimal   @default(0) @db.Decimal(14, 4)
+  shippingTerms         String?
+  paymentTerms          String?
+  overheadPct           Decimal   @default(0) @db.Decimal(8, 4)
+  wastePct              Decimal   @default(0) @db.Decimal(8, 4)
+  gSuppliesPct          Decimal   @default(0) @db.Decimal(8, 4)
+  excessProductionPct   Decimal   @default(0) @db.Decimal(8, 4)
+  profitPct             Decimal   @default(0) @db.Decimal(8, 4)
+  financialCostPct      Decimal   @default(0) @db.Decimal(8, 4)
+  commissionPct         Decimal   @default(0) @db.Decimal(8, 4)
+  commission3Pct        Decimal   @default(0) @db.Decimal(8, 4)
+  branchId              String
+  createdBy             String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  rawMaterialLines CostingRawMaterialLine[]
+  laborLines       CostingLaborLine[]
+  otherLines       CostingOtherLine[]
+  styleCard        StyleCard?               @relation(fields: [styleCardId], references: [id])
+
+  @@index([branchId])
+  @@index([styleCardId])
+}
+
+model CostingRawMaterialLine {
+  id             String  @id @default(uuid())
+  costingSheetId String
+  groupCode      String?
+  groupName      String?
+  inventoryCode  String?
+  inventoryName  String?
+  quantity       Decimal @default(0) @db.Decimal(14, 4)
+  wastePct       Decimal @default(0) @db.Decimal(8, 4)
+  unitPrice      Decimal @default(0) @db.Decimal(14, 4)
+  forex          String?
+  unit           String?
+  explanation    String?
+  costDetail     Json?
+  sortOrder      Int     @default(0)
+
+  costingSheet CostingSheet @relation(fields: [costingSheetId], references: [id], onDelete: Cascade)
+
+  @@index([costingSheetId])
+}
+
+model CostingLaborLine {
+  id             String  @id @default(uuid())
+  costingSheetId String
+  groupCode      String?
+  groupName      String?
+  explanation    String?
+  quantity       Decimal @default(0) @db.Decimal(14, 4)
+  wastePct       Decimal @default(0) @db.Decimal(8, 4)
+  forex          String?
+  unitPrice      Decimal @default(0) @db.Decimal(14, 4)
+  sortOrder      Int     @default(0)
+
+  costingSheet CostingSheet @relation(fields: [costingSheetId], references: [id], onDelete: Cascade)
+
+  @@index([costingSheetId])
+}
+
+model CostingOtherLine {
+  id             String  @id @default(uuid())
+  costingSheetId String
+  groupCode      String?
+  groupName      String?
+  explanation    String?
+  quantity       Decimal @default(0) @db.Decimal(14, 4)
+  forex          String?
+  unitPrice      Decimal @default(0) @db.Decimal(14, 4)
+  sortOrder      Int     @default(0)
+
+  costingSheet CostingSheet @relation(fields: [costingSheetId], references: [id], onDelete: Cascade)
+
+  @@index([costingSheetId])
 }
 
 // ── PLM — Style & Design ──────────────────────────────────────────────────────
@@ -3288,15 +3539,112 @@ model StyleCard {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
-  moodBoard        MoodBoard?          @relation(fields: [moodBoardId], references: [id])
-  measurementChart MeasurementChart?   @relation(fields: [measurementChartId], references: [id])
-  details          StyleCardDetail[]
-  sampleCards      SampleCard[]
-  productCards     ProductCard[]
-  studyTemplates   StudyTemplateCard[]
-  criticalPath     CriticalPath?
-  plmTasks         PlmTask[]
-  plmOrders        PlmOrder[]
+  // General tab
+  brand                    String?
+  departmentId             String?
+  groupCode                String?
+  groupName                String?
+  customerId               String?
+  customerStyleNo          String?
+  contactPerson            String?
+  productionMerchandiserId String?
+  productMerchandiserId    String?
+  garmentWash              String?
+  garmentDye               String?
+  designerId               String?
+  masterSize               String?
+  sizes                    Json?
+  colorways                Json?
+  attachments              Json?
+  explanations             String?
+
+  // BOM tab header fields
+  bomRouteCode       String?
+  bomEmbroideryRoute String?
+  bomCmtPrice        Decimal? @db.Decimal(12, 2)
+  bomRunningQuantity Decimal? @db.Decimal(14, 2)
+
+  moodBoard              MoodBoard?          @relation(fields: [moodBoardId], references: [id])
+  measurementChart       MeasurementChart?   @relation(fields: [measurementChartId], references: [id])
+  department             DepartmentCard?     @relation(fields: [departmentId], references: [id])
+  customer               Customer?           @relation(fields: [customerId], references: [id])
+  productionMerchandiser EmployeeCard?       @relation("StyleProductionMerchandiser", fields: [productionMerchandiserId], references: [id])
+  productMerchandiser    EmployeeCard?       @relation("StyleProductMerchandiser", fields: [productMerchandiserId], references: [id])
+  designer               EmployeeCard?       @relation("StyleDesigner", fields: [designerId], references: [id])
+  details                StyleCardDetail[]
+  sampleCards            SampleCard[]
+  productCards           ProductCard[]
+  studyTemplates         StudyTemplateCard[]
+  criticalPath           CriticalPath?
+  plmTasks               PlmTask[]
+  plmOrders              PlmOrder[]
+  bomLines               StyleBomLine[]
+  washCare               StyleWashCare?
+  expenseLines           StyleExpenseLine[]
+  costingSheets          CostingSheet[]
+}
+
+model StyleBomLine {
+  id              String  @id @default(uuid())
+  styleCardId     String
+  lineType        String
+  fabricCode      String?
+  fabricName      String?
+  explanation     String?
+  placement       String?
+  process         String?
+  variant         String?
+  rowColumn       String?
+  swatchCardId    String?
+  willBeCut       Boolean @default(false)
+  mainFabric      Boolean @default(false)
+  unit            String?
+  quantity        Decimal @default(0) @db.Decimal(14, 4)
+  wastePct        Decimal @default(0) @db.Decimal(8, 4)
+  dyeWastagePct   Decimal @default(0) @db.Decimal(8, 4)
+  otherWastagePct Decimal @default(0) @db.Decimal(8, 4)
+  unitPrice       Decimal @default(0) @db.Decimal(14, 4)
+  component       String?
+  dia             String?
+  gauge           String?
+  finishWidth     String?
+  finishRoute     String?
+  revision        String?
+  sortOrder       Int     @default(0)
+
+  styleCard  StyleCard   @relation(fields: [styleCardId], references: [id], onDelete: Cascade)
+  swatchCard SwatchCard? @relation(fields: [swatchCardId], references: [id])
+
+  @@index([styleCardId])
+}
+
+model StyleWashCare {
+  id               String  @id @default(uuid())
+  styleCardId      String  @unique
+  washing          String?
+  bleaching        String?
+  tumbleDrying     String?
+  naturalDrying    String?
+  ironing          String?
+  chemicalCleaning String?
+  wetCleaning      String?
+
+  styleCard StyleCard @relation(fields: [styleCardId], references: [id], onDelete: Cascade)
+}
+
+model StyleExpenseLine {
+  id          String  @id @default(uuid())
+  styleCardId String
+  expenseType String?
+  explanation String?
+  quantity    Decimal @default(0) @db.Decimal(14, 4)
+  unitPrice   Decimal @default(0) @db.Decimal(14, 4)
+  forex       String?
+  sortOrder   Int     @default(0)
+
+  styleCard StyleCard @relation(fields: [styleCardId], references: [id], onDelete: Cascade)
+
+  @@index([styleCardId])
 }
 
 model StyleCardDetail {
@@ -3337,6 +3685,7 @@ model SwatchCard {
   updatedAt    DateTime @updatedAt
 
   productCards ProductCardSwatch[]
+  bomLines     StyleBomLine[]
 }
 
 model ProductCard {
@@ -3366,7 +3715,7 @@ model ProductCard {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  styleCard    StyleCard?          @relation(fields: [styleCardId], references: [id])
+  styleCard    StyleCard?           @relation(fields: [styleCardId], references: [id])
   swatches     ProductCardSwatch[]
   measurements ProductMeasurement[]
 }
@@ -3459,26 +3808,32 @@ model PlmTemplate {
 // ── PLM — Orders & Tasks ──────────────────────────────────────────────────────
 
 model PlmOrder {
-  id            String    @id @default(uuid())
-  orderNumber   String    @unique
-  styleCardId   String
-  productCardId String?
-  buyerName     String?
-  quantity      Int
-  sizes         Json?
-  deliveryDate  DateTime?
-  status        String    @default("pending")
-  totalCost     Decimal?  @db.Decimal(12, 2)
-  currency      String    @default("PKR")
-  notes         String?
-  branchId      String
-  createdBy     String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id              String    @id @default(uuid())
+  orderNumber     String    @unique
+  styleCardId     String
+  productCardId   String?
+  buyerName       String?
+  quantity        Int
+  sizes           Json?
+  orderDate       DateTime?
+  deliveryDate    DateTime?
+  shipmentDate    DateTime?
+  orderGroup      String?
+  customerOrderNo String?
+  sampleTypeId    String?
+  status          String    @default("pending")
+  totalCost       Decimal?  @db.Decimal(12, 2)
+  currency        String    @default("PKR")
+  notes           String?
+  branchId        String
+  createdBy       String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
-  styleCard StyleCard @relation(fields: [styleCardId], references: [id])
-  tasks     PlmTask[]
-  orderType String    @default("local")
+  styleCard  StyleCard        @relation(fields: [styleCardId], references: [id])
+  sampleType StyleSampleType? @relation(fields: [sampleTypeId], references: [id])
+  tasks      PlmTask[]
+  orderType  String           @default("local")
 }
 
 model PlmTask {
@@ -3615,18 +3970,18 @@ model DocketTemplate {
 }
 
 model DocketTemplateItem {
-  id                 String   @id @default(uuid())
+  id                 String  @id @default(uuid())
   templateId         String
   documentTypeCardId String
-  isRequired         Boolean  @default(true)
-  sequence           Int      @default(0)
+  isRequired         Boolean @default(true)
+  sequence           Int     @default(0)
   defaultDueDays     Int?
-  approvalRequired   Boolean  @default(true)
+  approvalRequired   Boolean @default(true)
   approverRoleId     String?
   notes              String?
 
-  template         DocketTemplate    @relation(fields: [templateId], references: [id], onDelete: Cascade)
-  documentTypeCard DocumentTypeCard  @relation(fields: [documentTypeCardId], references: [id])
+  template         DocketTemplate   @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  documentTypeCard DocumentTypeCard @relation(fields: [documentTypeCardId], references: [id])
 
   @@index([templateId])
 }
@@ -3666,7 +4021,7 @@ model Docket {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  template   DocketTemplate?  @relation(fields: [templateId], references: [id])
+  template   DocketTemplate?   @relation(fields: [templateId], references: [id])
   items      DocketItem[]
   shareLinks DocketShareLink[]
   auditLogs  DocketAuditLog[]
@@ -3695,8 +4050,8 @@ model DocketItem {
   expiryDate         DateTime?
   notes              String?
 
-  docket           Docket          @relation(fields: [docketId], references: [id], onDelete: Cascade)
-  documentTypeCard DocumentTypeCard @relation(fields: [documentTypeCardId], references: [id])
+  docket           Docket               @relation(fields: [docketId], references: [id], onDelete: Cascade)
+  documentTypeCard DocumentTypeCard     @relation(fields: [documentTypeCardId], references: [id])
   documents        DocketDocument[]
   approvalHistory  DocketItemApproval[]
 

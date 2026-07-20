@@ -73,7 +73,7 @@ export default function SpreadsheetEditorPage() {
   const loadDocument = async () => {
     try {
       setLoading(true);
-      const doc = await documentsApi.getDocument(parseInt(documentId));
+      const doc = await documentsApi.getDocument(documentId);
       if (doc) {
         setDocument(doc);
         setDocumentName(doc.name || "");
@@ -177,7 +177,7 @@ export default function SpreadsheetEditorPage() {
       const sheetData = hotInstance.getData();
       
       // Save content to backend
-      await documentsApi.updateDocument(parseInt(documentId), {
+      await documentsApi.updateDocument(documentId, {
         name: documentName || document.name,
         content: JSON.stringify(sheetData),
       });
@@ -237,7 +237,7 @@ export default function SpreadsheetEditorPage() {
     }
 
     try {
-      await documentsApi.updateDocument(parseInt(documentId), {
+      await documentsApi.updateDocument(documentId, {
         name: documentName.trim(),
       });
       setDocument({ ...document, name: documentName.trim() });

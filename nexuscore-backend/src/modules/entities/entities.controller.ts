@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { EntitiesService } from './entities.service';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -154,6 +154,20 @@ export class EntitiesController {
   @ApiOperation({ summary: 'Delete custom field' })
   deleteCustomField(@Param('id') id: string, @CurrentUser() user: any) {
     return this.entitiesService.deleteCustomField(id, user.companyId);
+  }
+
+  // ── Custom Field Values ──────────────────────────────────────────────────────
+
+  @Get('custom-field-values')
+  @ApiOperation({ summary: 'Get custom field values for an entity record' })
+  getCustomFieldValues(@Query('entity') entity: string, @Query('entityId') entityId: string) {
+    return this.entitiesService.getCustomFieldValues(entity, entityId);
+  }
+
+  @Put('custom-field-values')
+  @ApiOperation({ summary: 'Replace custom field values for an entity record' })
+  upsertCustomFieldValues(@Body() body: { entity: string; entityId: string; values: any[] }) {
+    return this.entitiesService.upsertCustomFieldValues(body.entity, body.entityId, body.values);
   }
 
   // ── Form Sections ──────────────────────────────────────────────────────────

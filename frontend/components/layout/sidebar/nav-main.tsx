@@ -591,6 +591,9 @@ export const defaultNavItems: NavGroup[] = [
           { title: "Mood Boards", href: "/dashboard/plm/mood-boards" },
           { title: "Swatch Cards", href: "/dashboard/plm/swatch-cards" },
           { title: "Product Cards", href: "/dashboard/plm/product-cards" },
+          { title: "Costing Sheets", href: "/dashboard/plm/costing-sheets" },
+          { title: "Cost Detail Entry", href: "/dashboard/plm/costing-sheets/cost-detail-entry" },
+          { title: "Costing Profit Breakdowns", href: "/dashboard/plm/costing-sheets/profit-breakdown" },
           { title: "PLM Templates", href: "/dashboard/pages/form-builder" },
         ]
       },
@@ -609,6 +612,11 @@ export const defaultNavItems: NavGroup[] = [
           { title: "Employee Cards", href: "/dashboard/plm/general-definitions/employee-cards" },
           { title: "Resource Cards", href: "/dashboard/plm/general-definitions/resource-cards" },
           { title: "Study Template Cards", href: "/dashboard/plm/general-definitions/study-templates" },
+          { title: "Activity Type Cards", href: "/dashboard/plm/general-definitions/activity-type-cards" },
+          { title: "Color Cards", href: "/dashboard/plm/general-definitions/color-cards" },
+          { title: "Company Cards", href: "/dashboard/plm/general-definitions/company-cards" },
+          { title: "Sample Task Types", href: "/dashboard/plm/general-definitions/sample-task-types" },
+          { title: "Route Cards", href: "/dashboard/plm/general-definitions/route-cards" },
         ]
       },
       {

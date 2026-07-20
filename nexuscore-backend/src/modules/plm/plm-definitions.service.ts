@@ -287,6 +287,147 @@ export class PlmDefinitionsService {
     return { message: 'Line deleted' };
   }
 
+  // ── Activity Type Cards ───────────────────────────────────────────────────────
+  async listActivityTypes(branchId?: string) {
+    return this.prisma.activityTypeCard.findMany({
+      where: branchId ? { branchId } : undefined,
+      include: { department: true, resource: true, process: true, sampleType: true },
+      orderBy: { name: 'asc' },
+    });
+  }
+  async createActivityType(dto: any) {
+    return this.prisma.activityTypeCard.create({ data: dto });
+  }
+  async getActivityType(id: string) {
+    const r = await this.prisma.activityTypeCard.findUnique({
+      where: { id },
+      include: { department: true, resource: true, process: true, sampleType: true },
+    });
+    if (!r) throw new NotFoundException('ActivityTypeCard not found');
+    return r;
+  }
+  async updateActivityType(id: string, dto: any) {
+    await this.getActivityType(id);
+    return this.prisma.activityTypeCard.update({ where: { id }, data: dto });
+  }
+  async deleteActivityType(id: string) {
+    await this.getActivityType(id);
+    await this.prisma.activityTypeCard.delete({ where: { id } });
+    return { message: 'Deleted' };
+  }
+
+  // ── Color Cards ───────────────────────────────────────────────────────────────
+  async listColors(branchId?: string) {
+    return this.prisma.colorCard.findMany({
+      where: branchId ? { branchId } : undefined,
+      orderBy: { name: 'asc' },
+    });
+  }
+  async createColor(dto: any) {
+    return this.prisma.colorCard.create({ data: dto });
+  }
+  async getColor(id: string) {
+    const r = await this.prisma.colorCard.findUnique({ where: { id } });
+    if (!r) throw new NotFoundException('ColorCard not found');
+    return r;
+  }
+  async updateColor(id: string, dto: any) {
+    await this.getColor(id);
+    return this.prisma.colorCard.update({ where: { id }, data: dto });
+  }
+  async deleteColor(id: string) {
+    await this.getColor(id);
+    await this.prisma.colorCard.delete({ where: { id } });
+    return { message: 'Deleted' };
+  }
+
+  // ── Company Cards ─────────────────────────────────────────────────────────────
+  async listCompanyCards() {
+    return this.prisma.companyCard.findMany({ orderBy: { name: 'asc' } });
+  }
+  async createCompanyCard(dto: any) {
+    return this.prisma.companyCard.create({ data: dto });
+  }
+  async getCompanyCard(id: string) {
+    const r = await this.prisma.companyCard.findUnique({ where: { id } });
+    if (!r) throw new NotFoundException('CompanyCard not found');
+    return r;
+  }
+  async updateCompanyCard(id: string, dto: any) {
+    await this.getCompanyCard(id);
+    return this.prisma.companyCard.update({ where: { id }, data: dto });
+  }
+  async deleteCompanyCard(id: string) {
+    await this.getCompanyCard(id);
+    await this.prisma.companyCard.delete({ where: { id } });
+    return { message: 'Deleted' };
+  }
+
+  // ── Sample Task Types ─────────────────────────────────────────────────────────
+  async listSampleTaskTypes(branchId?: string) {
+    return this.prisma.sampleTaskType.findMany({
+      where: branchId ? { branchId } : undefined,
+      orderBy: { sequence: 'asc' },
+    });
+  }
+  async createSampleTaskType(dto: any) {
+    return this.prisma.sampleTaskType.create({ data: dto });
+  }
+  async getSampleTaskType(id: string) {
+    const r = await this.prisma.sampleTaskType.findUnique({ where: { id } });
+    if (!r) throw new NotFoundException('SampleTaskType not found');
+    return r;
+  }
+  async updateSampleTaskType(id: string, dto: any) {
+    await this.getSampleTaskType(id);
+    return this.prisma.sampleTaskType.update({ where: { id }, data: dto });
+  }
+  async deleteSampleTaskType(id: string) {
+    await this.getSampleTaskType(id);
+    await this.prisma.sampleTaskType.delete({ where: { id } });
+    return { message: 'Deleted' };
+  }
+
+  // ── Route Cards ───────────────────────────────────────────────────────────────
+  async listRouteCards(branchId?: string) {
+    return this.prisma.routeCard.findMany({
+      where: branchId ? { branchId } : undefined,
+      include: { lines: { include: { process: true }, orderBy: { sequence: 'asc' } } },
+      orderBy: { name: 'asc' },
+    });
+  }
+  async createRouteCard(dto: any) {
+    return this.prisma.routeCard.create({ data: dto });
+  }
+  async getRouteCard(id: string) {
+    const r = await this.prisma.routeCard.findUnique({
+      where: { id },
+      include: { lines: { include: { process: true }, orderBy: { sequence: 'asc' } } },
+    });
+    if (!r) throw new NotFoundException('RouteCard not found');
+    return r;
+  }
+  async updateRouteCard(id: string, dto: any) {
+    await this.getRouteCard(id);
+    return this.prisma.routeCard.update({ where: { id }, data: dto });
+  }
+  async deleteRouteCard(id: string) {
+    await this.getRouteCard(id);
+    await this.prisma.routeCard.delete({ where: { id } });
+    return { message: 'Deleted' };
+  }
+  async addRouteCardLine(routeCardId: string, dto: any) {
+    await this.getRouteCard(routeCardId);
+    return this.prisma.routeCardLine.create({ data: { ...dto, routeCardId }, include: { process: true } });
+  }
+  async updateRouteCardLine(lineId: string, dto: any) {
+    return this.prisma.routeCardLine.update({ where: { id: lineId }, data: dto, include: { process: true } });
+  }
+  async deleteRouteCardLine(lineId: string) {
+    await this.prisma.routeCardLine.delete({ where: { id: lineId } });
+    return { message: 'Line deleted' };
+  }
+
   // ── PLM Templates ─────────────────────────────────────────────────────────────
   async listTemplates(branchId?: string, type?: string) {
     return this.prisma.plmTemplate.findMany({
